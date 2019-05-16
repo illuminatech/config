@@ -1,0 +1,39 @@
+{
+    "name": "illuminatech/config",
+    "description": "Provides support for Laravel application runtime configuration managed in persistent storage",
+    "keywords": ["laravel", "configuration", "config", "runtime", "persistent", "database"],
+    "license": "BSD-3-Clause",
+    "support": {
+        "issues": "https://github.com/illuminatech/config/issues",
+        "wiki": "https://github.com/illuminatech/config/wiki",
+        "source": "https://github.com/illuminatech/config"
+    },
+    "authors": [
+        {
+            "name": "Paul Klimov",
+            "email": "klimov.paul@gmail.com"
+        }
+    ],
+    "require": {
+        "illuminate/database": "^5.8"
+    },
+    "require-dev": {
+        "illuminate/config": "^5.8",
+        "illuminate/validation": "^5.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "Illuminatech\\Config\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Illuminatech\\Config\\Test\\": "tests"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
+}
