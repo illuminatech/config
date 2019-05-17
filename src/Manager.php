@@ -20,6 +20,8 @@ use Illuminate\Contracts\Config\Repository as RepositoryContract;
 /**
  * Manager
  *
+ * Manager fully decorates the config repository and can substitute `Illuminate\Config\Repository` instance.
+ *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0
  */
@@ -87,6 +89,25 @@ class Manager implements ArrayAccess, RepositoryContract
     }
 
     /**
+     * Sets configuration items, which values should be placed in persistent storage.
+     *
+     * Example:
+     *
+     * ```php
+     * [
+     *     'some.config.value',
+     *     'another.config.value' => [
+     *         'label' => 'Custom label',
+     *         'rules' => ['required', 'numeric'],
+     *     ],
+     *     [
+     *         'key' => 'array.config.value',
+     *         'rules' => ['required', 'array'],
+     *         'cast' => 'array',
+     *     ],
+     * ]
+     * ```
+     *
      * @param  \Illuminatech\Config\Item[]|array  $items
      * @return static self reference.
      */

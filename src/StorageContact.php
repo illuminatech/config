@@ -18,7 +18,7 @@ interface StorageContact
     /**
      * Saves given values.
      *
-     * @param array $values in format: 'key' => 'value'
+     * @param  array  $values in format: 'key' => 'value'
      * @return bool success.
      */
     public function save(array $values): bool;
@@ -40,7 +40,7 @@ interface StorageContact
     /**
      * Clear saved value for the specified item.
      *
-     * @param string $key the key of the item to be cleared.
+     * @param  string  $key the key of the item to be cleared.
      * @return bool success.
      */
     public function clearValue($key): bool;

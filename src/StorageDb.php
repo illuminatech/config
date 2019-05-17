@@ -12,6 +12,17 @@ use Illuminate\Database\Connection;
 /**
  * StorageDb uses database table for the config values storage.
  *
+ * Database migration example:
+ *
+ * ```php
+ * Schema::create('configs', function (Blueprint $table) {
+ *     $table->string('key')->primary();
+ *     $table->string('value')->nullable();
+ * });
+ * ```
+ *
+ * @see \Illuminatech\Config\StorageEloquent
+ *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0
  */

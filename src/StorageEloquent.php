@@ -15,6 +15,31 @@ use Illuminate\Database\Eloquent\Model;
  * This storage has degraded performance in comparison to `StorageDb`, but provides more flexibility, allowing usage
  * Eloquent features like events.
  *
+ * Database migration example:
+ *
+ * ```php
+ * Schema::create('configs', function (Blueprint $table) {
+ *     $table->bigIncrements('id');
+ *     $table->string('key')->index();
+ *     $table->string('value')->nullable();
+ *     // ...
+ * });
+ * ```
+ *
+ * Model example:
+ *
+ * ```php
+ * class Config extends \Illuminate\Database\Eloquent\Model
+ * {
+ *     protected $fillable = [
+ *         'key',
+ *         'value',
+ *     ];
+ *
+ *     // ...
+ * }
+ * ```
+ *
  * @see \Illuminate\Database\Eloquent\Model
  * @see \Illuminatech\Config\StorageDb
  *
