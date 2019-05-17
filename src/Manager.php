@@ -8,6 +8,7 @@
 namespace Illuminatech\Config;
 
 use Throwable;
+use ArrayAccess;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Contracts\Validation\Validator;
@@ -22,7 +23,7 @@ use Illuminate\Contracts\Config\Repository as RepositoryContract;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0
  */
-class Manager implements RepositoryContract
+class Manager implements ArrayAccess, RepositoryContract
 {
     /**
      * @var string  key used to store values into the cache.
@@ -404,5 +405,52 @@ class Manager implements RepositoryContract
         }
 
         $this->repository->push($key, $value);
+    }
+
+    // Array Access :
+
+    /**
+     * Determine if the given configuration option exists.
+     *
+     * @param  string  $key
+     * @return bool
+     */
+    public function offsetExists($key)
+    {
+        return $this->has($key);
+    }
+
+    /**
+     * Get a configuration option.
+     *
+     * @param  string  $key
+     * @return mixed
+     */
+    public function offsetGet($key)
+    {
+        return $this->get($key);
+    }
+
+    /**
+     * Set a configuration option.
+     *
+     * @param  string  $key
+     * @param  mixed  $value
+     * @return void
+     */
+    public function offsetSet($key, $value)
+    {
+        $this->set($key, $value);
+    }
+
+    /**
+     * Unset a configuration option.
+     *
+     * @param  string  $key
+     * @return void
+     */
+    public function offsetUnset($key)
+    {
+        $this->set($key, null);
     }
 }
