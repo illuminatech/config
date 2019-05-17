@@ -18,6 +18,7 @@
         "illuminate/database": "^5.8"
     },
     "require-dev": {
+        "illuminate/cache": "^5.8",
         "illuminate/config": "^5.8",
         "illuminate/validation": "^5.8"
     },

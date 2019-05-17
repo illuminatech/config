@@ -4,9 +4,11 @@ namespace Illuminatech\Config\Test;
 
 use Illuminatech\Config\Item;
 use Illuminatech\Config\Manager;
-use Illuminate\Config\Repository;
+use Illuminate\Cache\ArrayStore;
 use Illuminatech\Config\StorageArray;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Cache\Repository as CacheRepository;
+use Illuminate\Config\Repository as ConfigRepository;
 
 class ManagerTest extends TestCase
 {
@@ -32,7 +34,7 @@ class ManagerTest extends TestCase
     {
         parent::setUp();
 
-        $this->repository = new Repository();
+        $this->repository = new ConfigRepository();
         $this->storage = new StorageArray();
         $this->manager = new Manager($this->repository, $this->storage);
     }
@@ -131,5 +133,37 @@ class ManagerTest extends TestCase
         $this->assertCount(2, $errors);
         $this->assertTrue(isset($errors['test.name']));
         $this->assertTrue(isset($errors['test.number']));
+    }
+
+    /**
+     * @depends testRestore
+     */
+    public function testCache()
+    {
+        $cache = new CacheRepository(new ArrayStore());
+
+        $this->manager->setCache($cache);
+
+        $this->manager->setItems([
+            'test.name',
+        ]);
+
+        $values = [
+            'test.name' => 'Cached name',
+        ];
+        $this->manager->save($values);
+
+        $this->assertTrue($cache->has($this->manager->cacheKey));
+
+        $this->storage->save([
+            'test.name' => 'Changed name',
+        ]);
+
+        $this->manager->restore();
+
+        $this->assertEquals('Cached name', $this->manager->getItems()['test.name']->getValue());
+
+        $this->manager->clear();
+        $this->assertFalse($cache->has($this->manager->cacheKey));
     }
 }

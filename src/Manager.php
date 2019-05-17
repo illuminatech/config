@@ -7,14 +7,33 @@
 
 namespace Illuminatech\Config;
 
+use Throwable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\ValidationException;
+use Psr\SimpleCache\CacheInterface as CacheContract;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use Illuminate\Contracts\Config\Repository as RepositoryContract;
 
+/**
+ * Manager
+ *
+ * @author Paul Klimov <klimov.paul@gmail.com>
+ * @since 1.0
+ */
 class Manager implements RepositoryContract
 {
+    /**
+     * @var string  key used to store values into the cache.
+     */
+    public $cacheKey = __CLASS__;
+
+    /**
+     * @var int|\DateInterval The TTL (e.g. lifetime) value for the cache.
+     */
+    public $cacheTtl = 3600 * 24;
+
     /**
      * @var \Illuminate\Contracts\Config\Repository wrapped config repository.
      */
@@ -26,6 +45,11 @@ class Manager implements RepositoryContract
     private $storage;
 
     /**
+     * @var \Psr\SimpleCache\CacheInterface|null cache instance to be used.
+     */
+    private $cache;
+
+    /**
      * @var \Illuminate\Support\Collection|\Illuminatech\Config\Item[]
      */
     private $items;
@@ -35,10 +59,18 @@ class Manager implements RepositoryContract
      */
     protected $isRestored = false;
 
-    public function __construct(RepositoryContract $configRepository, StorageContact $storage)
+    /**
+     * Constructor.
+     *
+     * @param  RepositoryContract  $configRepository config repository to be decorated.
+     * @param  StorageContact  $storage config values persistent storage.
+     * @param  \Psr\SimpleCache\CacheInterface  $cache cache repository to be used.
+     */
+    public function __construct(RepositoryContract $configRepository, StorageContact $storage, CacheContract $cache = null)
     {
         $this->repository = $configRepository;
         $this->storage = $storage;
+        $this->cache = $cache;
     }
 
     /**
@@ -54,7 +86,7 @@ class Manager implements RepositoryContract
     }
 
     /**
-     * @param  array  $items
+     * @param  \Illuminatech\Config\Item[]|array  $items
      * @return static self reference.
      */
     public function setItems(array $items): self
@@ -62,17 +94,21 @@ class Manager implements RepositoryContract
         $collection = new Collection();
 
         foreach ($items as $key => $value) {
-            if (is_scalar($value) && is_numeric($key)) {
-                $value = [
-                    'key' => $value,
-                ];
-            }
+            if ($value instanceof Item) {
+                $item = $value;
+            } else {
+                if (is_scalar($value) && is_numeric($key)) {
+                    $value = [
+                        'key' => $value,
+                    ];
+                }
 
-            if (! isset($value['key'])) {
-                $value['key'] = $key;
-            }
+                if (!isset($value['key'])) {
+                    $value['key'] = $key;
+                }
 
-            $item = new Item($this->repository, $value);
+                $item = new Item($this->repository, $value);
+            }
 
             $collection->offsetSet($item->id, $item);
         }
@@ -82,6 +118,12 @@ class Manager implements RepositoryContract
         return $this;
     }
 
+    /**
+     * Saves config item values into persistent storage.
+     *
+     * @param  array  $values config item values in format: `[id => value]`.
+     * @return bool
+     */
     public function save(array $values): bool
     {
         /* @var $items Item[] */
@@ -97,15 +139,61 @@ class Manager implements RepositoryContract
             $storeValues[$items[$id]->key] = $value;
         }
 
-        return $this->storage->save($storeValues);
+        $this->storage->save($storeValues);
+
+        $this->setCached($storeValues);
+
+        return true;
     }
 
+    /**
+     * Clears all config values in persistent storage.
+     *
+     * @return bool success.
+     */
+    public function clear(): bool
+    {
+        $this->deleteCached();
+
+        return $this->storage->clear();
+    }
+
+    /**
+     * Clear value, saved in persistent storage, for the specified item.
+     *
+     * @param  string  $key the key of the item to be cleared.
+     * @return bool success.
+     */
+    public function clearValue($key): bool
+    {
+        $this->deleteCached();
+
+        return $this->storage->clearValue($key);
+    }
+
+    /**
+     * Restores values from the persistent storage to the config repository.
+     * In case storage failed by some reason no immediate exception is thrown - error will be sent to the log instead.
+     *
+     * @return static self reference.
+     */
     public function restore(): self
     {
         /* @var $items Item[] */
         $items = $this->getItems()->keyBy('key');
 
-        $values = $this->storage->get();
+        $values = $this->getCached();
+        if ($values === null) {
+            try {
+                // storage may fail at some project state, like database table not yet created.
+                $values = $this->storage->get();
+
+                $this->setCached($values);
+            } catch (Throwable $exception) {
+                $this->logException($exception);
+                $values = [];
+            }
+        }
 
         foreach ($values as $key => $value) {
             if (! $items->offsetExists($key)) {
@@ -173,6 +261,77 @@ class Manager implements RepositoryContract
         }
 
         return $itemValues;
+    }
+
+    /**
+     * Writes the log about given exception.
+     *
+     * @param \Throwable $exception exception to be logged.
+     */
+    protected function logException(Throwable $exception): void
+    {
+        try {
+            Log::error($exception->getMessage(), [
+                'exception' => $exception
+            ]);
+        } catch (Throwable $e) {
+            error_log($exception->getMessage());
+        }
+    }
+
+    // Cache :
+
+    /**
+     * Sets cache repository to be used for config values caching.
+     *
+     * @param  \Psr\SimpleCache\CacheInterface  $cache cache repository to be used.
+     * @return static self reference.
+     */
+    public function setCache(CacheContract $cache)
+    {
+        $this->cache = $cache;
+
+        return $this;
+    }
+
+    /**
+     * Returns config values from the cache.
+     *
+     * @return array|null config values, `null` if not cached.
+     */
+    protected function getCached()
+    {
+        if ($this->cache === null) {
+            return null;
+        }
+
+        return $this->cache->get($this->cacheKey);
+    }
+
+    /**
+     * Stores config values into the cache.
+     *
+     * @param  array  $values config values to be cached.
+     */
+    protected function setCached(array $values): void
+    {
+        if ($this->cache === null) {
+            return;
+        }
+
+        $this->cache->set($this->cacheKey, $values, $this->cacheTtl);
+    }
+
+    /**
+     * Clears cached config values.
+     */
+    protected function deleteCached(): void
+    {
+        if ($this->cache === null) {
+            return;
+        }
+
+        $this->cache->delete($this->cacheKey);
     }
 
     // Config Repository Contract :
