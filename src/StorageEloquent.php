@@ -61,13 +61,19 @@ class StorageEloquent implements StorageContact
         foreach ($values as $key => $value) {
             $this->model::query()
                 ->updateOrCreate(
-                    [
-                        $this->keyAttribute => $key,
-                    ],
-                    [
-                        $this->keyAttribute => $key,
-                        $this->valueAttribute => $value,
-                    ]
+                    array_merge(
+                        $this->filter,
+                        [
+                            $this->keyAttribute => $key,
+                        ]
+                    ),
+                    array_merge(
+                        $this->filter,
+                        [
+                            $this->keyAttribute => $key,
+                            $this->valueAttribute => $value,
+                        ]
+                    )
                 );
         }
 

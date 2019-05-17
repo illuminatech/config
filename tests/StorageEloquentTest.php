@@ -35,6 +35,7 @@ class StorageEloquentTest extends TestCase
             $table->bigIncrements('id');
             $table->string('key');
             $table->string('value');
+            $table->string('type')->nullable();
         });
     }
 
@@ -107,5 +108,125 @@ class StorageEloquentTest extends TestCase
 
         $this->assertFalse(array_key_exists('test.name', $returnedValues));
         $this->assertTrue(array_key_exists('test.title', $returnedValues));
+    }
+
+    /**
+     * @depends testSave
+     */
+    public function testSaveFilter()
+    {
+        $fooStorage = clone $this->storage;
+        $fooStorage->filter = [
+            'type' => 'foo'
+        ];
+        $barStorage = clone $this->storage;
+        $barStorage->filter = [
+            'type' => 'bar'
+        ];
+
+        $fooValues = [
+            'test.name' => 'Foo name',
+        ];
+        $fooStorage->save($fooValues);
+
+        $barValues = [
+            'test.name' => 'Bar name',
+        ];
+        $barStorage->save($barValues);
+
+        $this->assertEquals($fooValues, $fooStorage->get());
+        $this->assertEquals($barValues, $barStorage->get());
+    }
+
+    /**
+     * @depends testUpdate
+     */
+    public function testUpdateFilter()
+    {
+        $fooStorage = clone $this->storage;
+        $fooStorage->filter = [
+            'type' => 'foo'
+        ];
+        $barStorage = clone $this->storage;
+        $barStorage->filter = [
+            'type' => 'bar'
+        ];
+
+        $fooValues = [
+            'test.name' => 'Foo name',
+        ];
+        $fooStorage->save($fooValues);
+
+        $barValues = [
+            'test.name' => 'Bar name',
+        ];
+        $barStorage->save($barValues);
+
+        $barStorage->save([
+            'test.name' => 'Updated name'
+        ]);
+
+        $this->assertSame('Updated name', $barStorage->get()['test.name']);
+        $this->assertEquals($fooValues, $fooStorage->get());
+    }
+
+    /**
+     * @depends testClear
+     */
+    public function testClearFilter()
+    {
+        $fooStorage = clone $this->storage;
+        $fooStorage->filter = [
+            'type' => 'foo'
+        ];
+        $barStorage = clone $this->storage;
+        $barStorage->filter = [
+            'type' => 'bar'
+        ];
+
+        $fooValues = [
+            'test.name' => 'Foo name',
+        ];
+        $fooStorage->save($fooValues);
+
+        $barValues = [
+            'test.name' => 'Bar name',
+        ];
+        $barStorage->save($barValues);
+
+        $barStorage->clear();
+
+        $this->assertEmpty($barStorage->get());
+        $this->assertEquals($fooValues, $fooStorage->get());
+    }
+
+    /**
+     * @depends testClearValue
+     */
+    public function testClearValueFilter()
+    {
+        $fooStorage = clone $this->storage;
+        $fooStorage->filter = [
+            'type' => 'foo'
+        ];
+        $barStorage = clone $this->storage;
+        $barStorage->filter = [
+            'type' => 'bar'
+        ];
+
+        $fooValues = [
+            'test.name' => 'Foo name',
+        ];
+        $fooStorage->save($fooValues);
+
+        $barValues = [
+            'test.name' => 'Bar name',
+        ];
+        $barStorage->save($barValues);
+
+        $barStorage->clearValue('test.name');
+
+        $this->assertFalse(array_key_exists('test.name', $barStorage->get()));
+        $this->assertEquals($fooValues, $fooStorage->get());
     }
 }
