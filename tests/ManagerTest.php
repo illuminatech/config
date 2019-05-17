@@ -2,11 +2,11 @@
 
 namespace Illuminatech\Config\Test;
 
-use Illuminate\Validation\ValidationException;
 use Illuminatech\Config\Item;
 use Illuminatech\Config\Manager;
 use Illuminate\Config\Repository;
 use Illuminatech\Config\StorageArray;
+use Illuminate\Validation\ValidationException;
 
 class ManagerTest extends TestCase
 {
@@ -43,7 +43,7 @@ class ManagerTest extends TestCase
             'test.name',
             'test.title',
             'test.number' => [
-                'rules' => ['required', 'number'],
+                'rules' => ['required', 'numeric'],
             ],
         ]);
 
@@ -103,7 +103,7 @@ class ManagerTest extends TestCase
             'test.name',
             'test.title',
             'test.number' => [
-                'rules' => ['required', 'number'],
+                'rules' => ['required', 'numeric'],
             ],
         ]);
 

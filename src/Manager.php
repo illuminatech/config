@@ -3,8 +3,9 @@
 namespace Illuminatech\Config;
 
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use Illuminate\Contracts\Config\Repository as RepositoryContract;
 
 class Manager implements RepositoryContract
@@ -117,6 +118,25 @@ class Manager implements RepositoryContract
     }
 
     /**
+     * Creates new validator instance for config item values validation.
+     *
+     * @param  array  $values raw input to be validated.
+     * @return \Illuminate\Contracts\Validation\Validator validator instance.
+     */
+    public function makeValidator(array $values): Validator
+    {
+        $rules = [];
+        foreach ($this->getItems() as $item) {
+            $inputName = str_replace('.', '\.', $item->id);
+            $rules[$inputName] = $item->rules;
+        }
+
+        return ValidatorFacade::make($values, $rules);
+    }
+
+    /**
+     * Validates data to be set as config item values.
+     *
      * @param  array  $values raw data to be validated.
      * @return array validated data.
      * @throws \Illuminate\Validation\ValidationException if validation fails.
@@ -125,20 +145,7 @@ class Manager implements RepositoryContract
     {
         $items = $this->getItems();
 
-        $rules = [];
-        $itemValues = [];
-        $customAttributes = [];
-        foreach ($items as $item) {
-            $inputName = str_replace('.', '\.', $item->id);
-            $rules[$inputName] = $item->rules;
-
-            if (array_key_exists($item->id, $values)) {
-                $itemValues[$item->id] = $values[$item->id];
-            }
-            $customAttributes[$item->id]= $item->label;
-        }
-
-        $validator = Validator::make($itemValues, $rules, [], $customAttributes);
+        $validator = $this->makeValidator($values);
 
         if ($validator->fails()) {
             $errors = [];
@@ -151,6 +158,13 @@ class Manager implements RepositoryContract
             }
 
             throw ValidationException::withMessages($errors);
+        }
+
+        $itemValues = [];
+        foreach ($items as $item) {
+            if (array_key_exists($item->id, $values)) {
+                $itemValues[$item->id] = $values[$item->id];
+            }
         }
 
         return $itemValues;
