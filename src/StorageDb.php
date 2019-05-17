@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link https://github.com/illuminatech
+ * @copyright Copyright (c) 2015 Illuminatech
+ * @license [New BSD License](http://www.opensource.org/licenses/bsd-license.php)
+ */
 
 namespace Illuminatech\Config;
 
@@ -19,13 +24,11 @@ class StorageDb implements StorageContact
 
     /**
      * @var string name of the column, which should store config item key.
-     * @since 1.0.7
      */
     public $keyColumn = 'key';
 
     /**
      * @var string name of the column, which should store config item value.
-     * @since 1.0.7
      */
     public $valueColumn = 'value';
 
@@ -40,6 +43,10 @@ class StorageDb implements StorageContact
      */
     protected $connection;
 
+    /**
+     * Constructor.
+     * @param  Connection  $connection DB connection to be used.
+     */
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
@@ -84,7 +91,6 @@ class StorageDb implements StorageContact
     {
         return $this->connection->table($this->table)
             ->where($this->filter)
-            ->get()
             ->pluck($this->valueColumn, $this->keyColumn)
             ->toArray();
     }
