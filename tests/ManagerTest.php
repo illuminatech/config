@@ -166,4 +166,28 @@ class ManagerTest extends TestCase
         $this->manager->clear();
         $this->assertFalse($cache->has($this->manager->cacheKey));
     }
+
+    /**
+     * @depends testRestore
+     */
+    public function testTypeCast()
+    {
+        $this->manager->setItems([
+            'test.array' => [
+                'cast' => 'array',
+            ],
+        ]);
+
+        $values = [
+            'test.array' => [
+                'some' => 'array'
+            ],
+        ];
+        $this->manager->save($values);
+
+        $this->manager->restore();
+        $this->assertEquals(['some' => 'array'], $this->manager->getItems()['test.array']->getValue());
+
+        $this->assertTrue(is_string($this->storage->get()['test.array']));
+    }
 }

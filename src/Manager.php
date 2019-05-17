@@ -134,7 +134,7 @@ class Manager implements RepositoryContract
             if (! isset($items[$id])) {
                 continue;
             }
-            $items[$id]->setValue($value);
+            $value = $items[$id]->saveValue($value);
 
             $storeValues[$items[$id]->key] = $value;
         }
@@ -144,31 +144,6 @@ class Manager implements RepositoryContract
         $this->setCached($storeValues);
 
         return true;
-    }
-
-    /**
-     * Clears all config values in persistent storage.
-     *
-     * @return bool success.
-     */
-    public function clear(): bool
-    {
-        $this->deleteCached();
-
-        return $this->storage->clear();
-    }
-
-    /**
-     * Clear value, saved in persistent storage, for the specified item.
-     *
-     * @param  string  $key the key of the item to be cleared.
-     * @return bool success.
-     */
-    public function clearValue($key): bool
-    {
-        $this->deleteCached();
-
-        return $this->storage->clearValue($key);
     }
 
     /**
@@ -200,14 +175,37 @@ class Manager implements RepositoryContract
                 continue;
             }
 
-            $items[$key]->setValue($value);
-
-            $this->repository->set($key, $value);
+            $items[$key]->restoreValue($value);
         }
 
         $this->isRestored = true;
 
         return $this;
+    }
+
+    /**
+     * Clears all config values in persistent storage.
+     *
+     * @return bool success.
+     */
+    public function clear(): bool
+    {
+        $this->deleteCached();
+
+        return $this->storage->clear();
+    }
+
+    /**
+     * Clear value, saved in persistent storage, for the specified item.
+     *
+     * @param  string  $key the key of the item to be cleared.
+     * @return bool success.
+     */
+    public function clearValue($key): bool
+    {
+        $this->deleteCached();
+
+        return $this->storage->clearValue($key);
     }
 
     /**
