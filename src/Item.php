@@ -65,7 +65,7 @@ class Item
         $this->key = $config['key'];
         $this->id = $config['id'] ?? $this->key;
         $this->label = $config['label'] ?? ucwords(str_replace(['.', '-', '_'], ' ', $this->id));
-        $this->rules = $config['rules'] ?? ['required'];
+        $this->rules = $config['rules'] ?? ['sometimes', 'required'];
         $this->cast = $config['cast'] ?? null;
     }
 

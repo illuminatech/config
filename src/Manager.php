@@ -232,6 +232,7 @@ class Manager implements ArrayAccess, RepositoryContract
 
     /**
      * Creates new validator instance for config item values validation.
+     * This method takes into account usage of dot ('.') symbol at item IDs, performing escapes for the rule definitions.
      *
      * @param  array  $values raw input to be validated.
      * @return \Illuminate\Contracts\Validation\Validator validator instance.
@@ -240,7 +241,7 @@ class Manager implements ArrayAccess, RepositoryContract
     {
         $rules = [];
         foreach ($this->getItems() as $item) {
-            $inputName = str_replace('.', '\.', $item->id);
+            $inputName = str_replace('.', '->', $item->id);
             $rules[$inputName] = $item->rules;
         }
 
@@ -249,6 +250,7 @@ class Manager implements ArrayAccess, RepositoryContract
 
     /**
      * Validates data to be set as config item values.
+     * This method takes into account usage of dot ('.') symbol at item IDs, ensuring input will not be considered as an array.
      *
      * @param  array  $values raw data to be validated.
      * @return array validated data.
@@ -274,10 +276,9 @@ class Manager implements ArrayAccess, RepositoryContract
         }
 
         $itemValues = [];
-        foreach ($items as $item) {
-            if (array_key_exists($item->id, $values)) {
-                $itemValues[$item->id] = $values[$item->id];
-            }
+        foreach ($validator->validated() as $key => $value) {
+            $itemId = str_replace('->', '.', $key);
+            $itemValues[$itemId] = $value;
         }
 
         return $itemValues;
