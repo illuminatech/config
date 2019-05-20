@@ -53,4 +53,23 @@ class ItemTest extends TestCase
         $this->assertSame('foo', $item->getValue());
         $this->assertSame('foo', $repository->get('some.key'));
     }
+
+    /**
+     * @depends testGetValue
+     */
+    public function testToArray()
+    {
+        $repository = new Repository;
+
+        $item = new Item($repository, [
+            'key' => 'some.key'
+        ]);
+
+        $array = $item->toArray();
+
+        $this->assertSame($item->id, $array['id']);
+        $this->assertSame($item->key, $array['key']);
+        $this->assertSame($item->label, $array['label']);
+        $this->assertSame($item->getValue(), $array['value']);
+    }
 }

@@ -8,6 +8,7 @@
 namespace Illuminatech\Config;
 
 use Illuminate\Contracts\Config\Repository;
+use Illuminate\Contracts\Support\Arrayable;
 
 /**
  * Item represents a single configuration item.
@@ -15,7 +16,7 @@ use Illuminate\Contracts\Config\Repository;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0
  */
-class Item
+class Item implements Arrayable
 {
     /**
      * @var string config parameter unique identifier.
@@ -166,5 +167,20 @@ class Item
             default:
                 throw new \InvalidArgumentException('Unsupported "'.get_class($this).'::$cast" value: '.print_r($this->cast, true));
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'key' => $this->key,
+            'label' => $this->label,
+            'rules' => $this->rules,
+            'cast' => $this->cast,
+            'value' => $this->getValue(),
+        ];
     }
 }

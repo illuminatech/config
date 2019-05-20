@@ -9,6 +9,7 @@ namespace Illuminatech\Config;
 
 use Throwable;
 use ArrayAccess;
+use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Contracts\Validation\Validator;
@@ -268,7 +269,20 @@ class Manager implements ArrayAccess, RepositoryContract
                 $itemId = str_replace('->', '.', $key);
                 $errors[$itemId] = [];
                 foreach ($messages as $message) {
-                    $errors[$itemId][] = str_replace($key, $items[$itemId]->label, $message);
+                    $itemLabel = $items[$itemId]->label;
+                    $errors[$itemId][] = str_replace(
+                        [
+                            $key,
+                            Str::ucfirst($key),
+                            Str::upper($key),
+                        ],
+                        [
+                            $itemLabel,
+                            Str::ucfirst($itemLabel),
+                            Str::upper($itemLabel),
+                        ],
+                        $message
+                    );
                 }
             }
 
