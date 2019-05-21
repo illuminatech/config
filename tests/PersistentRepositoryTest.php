@@ -3,14 +3,14 @@
 namespace Illuminatech\Config\Test;
 
 use Illuminatech\Config\Item;
-use Illuminatech\Config\Manager;
 use Illuminate\Cache\ArrayStore;
 use Illuminatech\Config\StorageArray;
+use Illuminatech\Config\PersistentRepository;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Cache\Repository as CacheRepository;
 use Illuminate\Config\Repository as ConfigRepository;
 
-class ManagerTest extends TestCase
+class PersistentRepositoryTest extends TestCase
 {
     /**
      * @var \Illuminate\Contracts\Config\Repository test config repository.
@@ -23,9 +23,9 @@ class ManagerTest extends TestCase
     protected $storage;
 
     /**
-     * @var \Illuminatech\Config\Manager test manager.
+     * @var \Illuminatech\Config\PersistentRepository test persistent repository.
      */
-    protected $manager;
+    protected $persistentRepository;
 
     /**
      * {@inheritdoc}
@@ -36,12 +36,12 @@ class ManagerTest extends TestCase
 
         $this->repository = new ConfigRepository();
         $this->storage = new StorageArray();
-        $this->manager = new Manager($this->repository, $this->storage);
+        $this->persistentRepository = new PersistentRepository($this->repository, $this->storage);
     }
 
     public function testSetupItems()
     {
-        $this->manager->setItems([
+        $this->persistentRepository->setItems([
             'test.name',
             'test.title',
             'test.number' => [
@@ -49,7 +49,7 @@ class ManagerTest extends TestCase
             ],
         ]);
 
-        $items = $this->manager->getItems();
+        $items = $this->persistentRepository->getItems();
 
         $this->assertCount(3, $items);
         $this->assertTrue($items->first() instanceof Item);
@@ -60,7 +60,7 @@ class ManagerTest extends TestCase
      */
     public function testSave()
     {
-        $this->manager->setItems([
+        $this->persistentRepository->setItems([
             'test.name',
             'test.title',
         ]);
@@ -69,10 +69,10 @@ class ManagerTest extends TestCase
             'test.name' => 'Test name',
             'test.title' => 'Test title',
         ];
-        $this->manager->save($values);
+        $this->persistentRepository->save($values);
 
         $this->assertEquals($values, $this->storage->get());
-        $this->assertEquals('Test name', $this->manager->getItems()['test.name']->getValue());
+        $this->assertEquals('Test name', $this->persistentRepository->getItems()['test.name']->getValue());
     }
 
     /**
@@ -80,7 +80,7 @@ class ManagerTest extends TestCase
      */
     public function testRestore()
     {
-        $this->manager->setItems([
+        $this->persistentRepository->setItems([
             'test.name',
             'test.title',
         ]);
@@ -91,8 +91,8 @@ class ManagerTest extends TestCase
         ];
         $this->storage->save($values);
 
-        $this->manager->restore();
-        $this->assertEquals('Test name', $this->manager->getItems()['test.name']->getValue());
+        $this->persistentRepository->restore();
+        $this->assertEquals('Test name', $this->persistentRepository->getItems()['test.name']->getValue());
         $this->assertEquals('Test name', $this->repository->get('test.name'));
     }
 
@@ -101,7 +101,7 @@ class ManagerTest extends TestCase
      */
     public function testValidate()
     {
-        $this->manager->setItems([
+        $this->persistentRepository->setItems([
             'test.name',
             'test.title',
             'test.number' => [
@@ -115,7 +115,7 @@ class ManagerTest extends TestCase
             'test.number' => '12',
         ];
 
-        $validatedValues = $this->manager->validate($values);
+        $validatedValues = $this->persistentRepository->validate($values);
         $this->assertEquals($values, $validatedValues);
 
         $values = [
@@ -125,7 +125,7 @@ class ManagerTest extends TestCase
         ];
 
         try {
-            $this->manager->validate($values);
+            $this->persistentRepository->validate($values);
         } catch (ValidationException $validationException) {}
 
         $this->assertTrue(isset($validationException));
@@ -142,29 +142,29 @@ class ManagerTest extends TestCase
     {
         $cache = new CacheRepository(new ArrayStore());
 
-        $this->manager->setCache($cache);
+        $this->persistentRepository->setCache($cache);
 
-        $this->manager->setItems([
+        $this->persistentRepository->setItems([
             'test.name',
         ]);
 
         $values = [
             'test.name' => 'Cached name',
         ];
-        $this->manager->save($values);
+        $this->persistentRepository->save($values);
 
-        $this->assertTrue($cache->has($this->manager->cacheKey));
+        $this->assertTrue($cache->has($this->persistentRepository->cacheKey));
 
         $this->storage->save([
             'test.name' => 'Changed name',
         ]);
 
-        $this->manager->restore();
+        $this->persistentRepository->restore();
 
-        $this->assertEquals('Cached name', $this->manager->getItems()['test.name']->getValue());
+        $this->assertEquals('Cached name', $this->persistentRepository->getItems()['test.name']->getValue());
 
-        $this->manager->clear();
-        $this->assertFalse($cache->has($this->manager->cacheKey));
+        $this->persistentRepository->clear();
+        $this->assertFalse($cache->has($this->persistentRepository->cacheKey));
     }
 
     /**
@@ -172,7 +172,7 @@ class ManagerTest extends TestCase
      */
     public function testTypeCast()
     {
-        $this->manager->setItems([
+        $this->persistentRepository->setItems([
             'test.array' => [
                 'cast' => 'array',
             ],
@@ -183,10 +183,10 @@ class ManagerTest extends TestCase
                 'some' => 'array'
             ],
         ];
-        $this->manager->save($values);
+        $this->persistentRepository->save($values);
 
-        $this->manager->restore();
-        $this->assertEquals(['some' => 'array'], $this->manager->getItems()['test.array']->getValue());
+        $this->persistentRepository->restore();
+        $this->assertEquals(['some' => 'array'], $this->persistentRepository->getItems()['test.array']->getValue());
 
         $this->assertTrue(is_string($this->storage->get()['test.array']));
     }

@@ -23,6 +23,16 @@ class StorageArray implements StorageContact
     protected $data = [];
 
     /**
+     * Constructor.
+     *
+     * @param  array  $data data to be stored.
+     */
+    public function __construct(array $data = [])
+    {
+        $this->data = $data;
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function save(array $values): bool

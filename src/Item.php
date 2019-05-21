@@ -7,11 +7,17 @@
 
 namespace Illuminatech\Config;
 
+use InvalidArgumentException;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Support\Arrayable;
 
 /**
  * Item represents a single configuration item.
+ *
+ * Item should be bound to the raw config repository (e.g. not persistent one).
+ * It is responsible for setting and retrieving data from repository, performing its transformation if necessary.
+ *
+ * Item holds some data, which can be used for 'config setup' user interface composition, such as label, validation rules and other.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0
@@ -20,6 +26,7 @@ class Item implements Arrayable
 {
     /**
      * @var string config parameter unique identifier.
+     * This value will be used in request fields and form inputs.
      */
     public $id;
 
@@ -33,6 +40,11 @@ class Item implements Arrayable
      * @var string verbose label for the config value.
      */
     public $label;
+
+    /**
+     * @var string|null verbose description for the config value.
+     */
+    public $hint;
 
     /**
      * @var array validation rules for this item.
@@ -60,12 +72,13 @@ class Item implements Arrayable
         $this->repository = $configRepository;
 
         if (! isset($config['key'])) {
-            throw new \InvalidArgumentException('"'.get_class($this).'::$key" must be specified.');
+            throw new InvalidArgumentException('"'.get_class($this).'::$key" must be specified.');
         }
 
         $this->key = $config['key'];
         $this->id = $config['id'] ?? $this->key;
         $this->label = $config['label'] ?? ucwords(str_replace(['.', '-', '_'], ' ', $this->id));
+        $this->hint = $config['hint'] ?? null;
         $this->rules = $config['rules'] ?? ['sometimes', 'required'];
         $this->cast = $config['cast'] ?? null;
     }
@@ -131,7 +144,7 @@ class Item implements Arrayable
     }
 
     /**
-     * Typecasts raw value to the acount according to {@link $cast} value.
+     * Typecasts raw value to the actual one according to {@link $cast} value.
      *
      * @param  string  $value value from persistent storage.
      * @return mixed actual value after typecast.
@@ -165,7 +178,7 @@ class Item implements Arrayable
             case 'json':
                 return json_decode($value, true);
             default:
-                throw new \InvalidArgumentException('Unsupported "'.get_class($this).'::$cast" value: '.print_r($this->cast, true));
+                throw new InvalidArgumentException('Unsupported "'.get_class($this).'::$cast" value: '.print_r($this->cast, true));
         }
     }
 
@@ -178,6 +191,7 @@ class Item implements Arrayable
             'id' => $this->id,
             'key' => $this->key,
             'label' => $this->label,
+            'hint' => $this->hint,
             'rules' => $this->rules,
             'cast' => $this->cast,
             'value' => $this->getValue(),

@@ -19,14 +19,48 @@ use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use Illuminate\Contracts\Config\Repository as RepositoryContract;
 
 /**
- * Manager
+ * PersistentRepository is a configuration repository, which stores some of its data in persistent storage like database.
  *
- * Manager fully decorates the config repository and can substitute `Illuminate\Config\Repository` instance.
+ * Config data, which should be saved in persistent storage defined by {@link $items}. It will be automatically retrieved
+ * on the first attempt to access data in this repository. It also can be done manually vai {@link restore()} method.
+ * In order to save data to the persistent storage use method {@link save()}.
+ *
+ * PersistentRepository fully decorates the config repository and can substitute `Illuminate\Config\Repository` instance.
+ * For example, you can replace Laravel standard configuration repository with this one:
+ *
+ * ```php
+ * use Illuminatech\Config\StorageDb;
+ * use Illuminate\Support\ServiceProvider;
+ * use Illuminatech\Config\PersistentRepository;
+ *
+ * class AppServiceProvider extends ServiceProvider
+ * {
+ *     public function register()
+ *     {
+ *         $this->app->extend('config', function ($originConfig) {
+ *             $storage = $this->app->make(StorageDb::class);
+ *
+ *             $newConfig = new PersistentRepository($originConfig, $storage);
+ *             $newConfig->setItems([
+ *                 'mail.contact.address' => [
+ *                     'label' => 'Email address receiving contact messages',
+ *                     'rules' => ['sometimes', 'required', 'email'],
+ *                 ],
+ *                 // ...
+ *             ]);
+ *
+ *             return $newConfig;
+ *         });
+ *
+ *         // ...
+ *     }
+ * }
+ * ```
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0
  */
-class Manager implements ArrayAccess, RepositoryContract
+class PersistentRepository implements ArrayAccess, RepositoryContract
 {
     /**
      * @var string  key used to store values into the cache.
@@ -54,7 +88,7 @@ class Manager implements ArrayAccess, RepositoryContract
     private $cache;
 
     /**
-     * @var \Illuminate\Support\Collection|\Illuminatech\Config\Item[]
+     * @var \Illuminate\Support\Collection|\Illuminatech\Config\Item[] configuration items, which values should be placed in persistent storage.
      */
     private $items;
 
@@ -109,6 +143,8 @@ class Manager implements ArrayAccess, RepositoryContract
      * ]
      * ```
      *
+     * @see \Illuminatech\Config\Item
+     *
      * @param  \Illuminatech\Config\Item[]|array  $items
      * @return static self reference.
      */
@@ -145,7 +181,7 @@ class Manager implements ArrayAccess, RepositoryContract
      * Saves config item values into persistent storage.
      *
      * @param  array  $values config item values in format: `[id => value]`.
-     * @return bool
+     * @return bool whether operation was successful.
      */
     public function save(array $values): bool
     {
@@ -177,7 +213,7 @@ class Manager implements ArrayAccess, RepositoryContract
      */
     public function restore(): self
     {
-        /* @var $items Item[] */
+        /* @var $items Collection|Item[] */
         $items = $this->getItems()->keyBy('key');
 
         $values = $this->getCached();
@@ -332,7 +368,7 @@ class Manager implements ArrayAccess, RepositoryContract
     /**
      * Returns config values from the cache.
      *
-     * @return array|null config values, `null` if not cached.
+     * @return array|null config values, `null` - if not cached.
      */
     protected function getCached()
     {
