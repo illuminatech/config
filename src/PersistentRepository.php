@@ -21,7 +21,7 @@ use Illuminate\Contracts\Config\Repository as RepositoryContract;
 /**
  * PersistentRepository is a configuration repository, which stores some of its data in persistent storage like database.
  *
- * Config data, which should be saved in persistent storage defined by {@link $items}. It will be automatically retrieved
+ * Config data, which should be saved in persistent storage defined via {@link setItems()}. It will be automatically retrieved
  * on the first attempt to access data in this repository. It also can be done manually vai {@link restore()} method.
  * In order to save data to the persistent storage use method {@link save()}.
  *
