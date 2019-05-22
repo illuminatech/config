@@ -7,6 +7,7 @@
 
 namespace Illuminatech\Config;
 
+use RuntimeException;
 use InvalidArgumentException;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Support\Arrayable;
@@ -64,13 +65,10 @@ class Item implements Arrayable
     /**
      * Constructor.
      *
-     * @param  Repository  $configRepository config repository to store this item value.
      * @param  array  $config this item properties to be set in format: [name => value].
      */
-    public function __construct(Repository $configRepository, array $config)
+    public function __construct(array $config)
     {
-        $this->repository = $configRepository;
-
         if (! isset($config['key'])) {
             throw new InvalidArgumentException('"'.get_class($this).'::$key" must be specified.');
         }
@@ -84,6 +82,31 @@ class Item implements Arrayable
     }
 
     /**
+     * Binds this item to the given config repository.
+     *
+     * @param  \Illuminate\Contracts\Config\Repository  $configRepository config repository to store this item value.
+     * @return static self reference.
+     */
+    public function setRepository(Repository $configRepository): self
+    {
+        $this->repository = $configRepository;
+
+        return $this;
+    }
+
+    /**
+     * @return \Illuminate\Contracts\Config\Repository config repository to store this item value.
+     */
+    public function getRepository(): Repository
+    {
+        if ($this->repository === null) {
+            throw new RuntimeException("Item '{$this->id}' is not bound to any config repository.");
+        }
+
+        return $this->repository;
+    }
+
+    /**
      * Returns value for this item from related config repository.
      *
      * @param  mixed|null  $default
@@ -91,7 +114,7 @@ class Item implements Arrayable
      */
     public function getValue($default = null)
     {
-        return $this->repository->get($this->key, $default);
+        return $this->getRepository()->get($this->key, $default);
     }
 
     /**
@@ -102,7 +125,7 @@ class Item implements Arrayable
      */
     public function setValue($value): self
     {
-        $this->repository->set($this->key, $value);
+        $this->getRepository()->set($this->key, $value);
 
         return $this;
     }

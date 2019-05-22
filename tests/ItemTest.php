@@ -9,9 +9,7 @@ class ItemTest extends TestCase
 {
     public function testCreate()
     {
-        $repository = new Repository;
-
-        $item = new Item($repository, [
+        $item = new Item([
             'key' => 'some.key'
         ]);
 
@@ -28,9 +26,9 @@ class ItemTest extends TestCase
     {
         $repository = new Repository;
 
-        $item = new Item($repository, [
+        $item = (new Item([
             'key' => 'some.key'
-        ]);
+        ]))->setRepository($repository);
 
         $this->assertNull($item->getValue());
 
@@ -45,9 +43,9 @@ class ItemTest extends TestCase
     {
         $repository = new Repository;
 
-        $item = new Item($repository, [
+        $item = (new Item([
             'key' => 'some.key'
-        ]);
+        ]))->setRepository($repository);
 
         $item->setValue('foo');
         $this->assertSame('foo', $item->getValue());
@@ -61,9 +59,9 @@ class ItemTest extends TestCase
     {
         $repository = new Repository;
 
-        $item = new Item($repository, [
+        $item = (new Item([
             'key' => 'some.key'
-        ]);
+        ]))->setRepository($repository);
 
         $array = $item->toArray();
 

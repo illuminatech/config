@@ -143,6 +143,7 @@ Here are some examples of item specifications:
 ```php
 <?php
 
+use Illuminatech\Config\Item;
 use Illuminatech\Config\PersistentRepository;
 
 $persistentConfigRepository = new PersistentRepository(...);
@@ -157,6 +158,7 @@ $persistentConfigRepository->setItems([
         'rules' => ['required', 'array'],
         'cast' => 'array',
     ],
+    new Item(['key' => 'explicit.object']),
 ]);
 ```
 
@@ -175,7 +177,7 @@ Following storages are available within this extension:
 Please refer to the particular storage class for more details.
 
 
-## Saving data <span id="saving-data"></span>
+## Saving and restoring data <span id="saving-restoring-data"></span>
 
 
 ## Validation <span id="validation"></span>

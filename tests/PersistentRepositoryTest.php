@@ -43,17 +43,18 @@ class PersistentRepositoryTest extends TestCase
     public function testSetupItems()
     {
         $this->persistentRepository->setItems([
-            'test.name',
-            'test.title',
-            'test.number' => [
+            'plain.key',
+            'array.config' => [
                 'rules' => ['required', 'numeric'],
             ],
+            new Item(['key' => 'explicit.object']),
         ]);
 
         $items = $this->persistentRepository->getItems();
 
         $this->assertCount(3, $items);
         $this->assertTrue($items->first() instanceof Item);
+        $this->assertSame($this->repository, $items->last()->getRepository());
     }
 
     /**

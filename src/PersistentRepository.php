@@ -171,8 +171,10 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
                     $value['key'] = $key;
                 }
 
-                $item = new Item($this->repository, $value);
+                $item = new Item($value);
             }
+
+            $item->setRepository($this->repository);
 
             $collection->offsetSet($item->id, $item);
         }
