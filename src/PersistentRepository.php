@@ -93,6 +93,11 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
     private $items;
 
     /**
+     * @var array|null cached list of config item keys.
+     */
+    private $itemKeys;
+
+    /**
      * @var bool whether data has been retrieved from persistent storage and applied to the repository.
      */
     protected $isRestored = false;
@@ -173,6 +178,7 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
         }
 
         $this->items = $collection;
+        $this->itemKeys = null;
 
         return $this;
     }
@@ -181,9 +187,9 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
      * Saves config item values into persistent storage.
      *
      * @param  array  $values config item values in format: `[id => value]`.
-     * @return bool whether operation was successful.
+     * @return static self reference.
      */
-    public function save(array $values): bool
+    public function save(array $values): self
     {
         /* @var $items Item[] */
         $items = $this->getItems()->keyBy('id');
@@ -202,7 +208,22 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
 
         $this->setCached($storeValues);
 
-        return true;
+        return $this;
+    }
+
+    /**
+     * Saves current values of the config items into persistent storage.
+     *
+     * @return static self reference.
+     */
+    public function synchronize(): self
+    {
+        $values = [];
+        foreach ($this->getItems() as $item) {
+            $values[$item->key] = $item->getValue();
+        }
+
+        return $this->save($values);
     }
 
     /**
@@ -350,6 +371,39 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
         }
     }
 
+    /**
+     * @return array cached list of config item keys.
+     */
+    private function getItemKeys(): array
+    {
+        if ($this->itemKeys === null) {
+            $this->itemKeys = $this->getItems()->pluck('key')->toArray();
+        }
+
+        return $this->itemKeys;
+    }
+
+    /**
+     * Checks whether given config key matches some of keys from {@link $items}, e.g. whether the key should be saved
+     * in persistent storage or not.
+     *
+     * @param  string  $key config key.
+     * @return bool whether given key is a persistent one or not.
+     */
+    private function isPersistentKey($key): bool
+    {
+        foreach ($this->getItemKeys() as $persistentKey) {
+            $key = $key.'.';
+            $persistentKey = $persistentKey.'.';
+
+            if (strncmp($key, $persistentKey, min(strlen($key), strlen($persistentKey))) === 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     // Cache :
 
     /**
@@ -424,7 +478,7 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
      */
     public function get($key, $default = null)
     {
-        if (! $this->isRestored) {
+        if (! $this->isRestored && $this->isPersistentKey($key)) {
             $this->restore();
         }
 
@@ -448,7 +502,7 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
      */
     public function set($key, $value = null)
     {
-        if (! $this->isRestored) {
+        if (! $this->isRestored && $this->isPersistentKey($key)) {
             $this->restore();
         }
 
@@ -460,7 +514,7 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
      */
     public function prepend($key, $value)
     {
-        if (! $this->isRestored) {
+        if (! $this->isRestored && $this->isPersistentKey($key)) {
             $this->restore();
         }
 
@@ -472,7 +526,7 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
      */
     public function push($key, $value)
     {
-        if (! $this->isRestored) {
+        if (! $this->isRestored && $this->isPersistentKey($key)) {
             $this->restore();
         }
 

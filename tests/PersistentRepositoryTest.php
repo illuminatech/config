@@ -5,6 +5,7 @@ namespace Illuminatech\Config\Test;
 use Illuminatech\Config\Item;
 use Illuminate\Cache\ArrayStore;
 use Illuminatech\Config\StorageArray;
+use Illuminatech\Config\StorageContact;
 use Illuminatech\Config\PersistentRepository;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Cache\Repository as CacheRepository;
@@ -73,6 +74,21 @@ class PersistentRepositoryTest extends TestCase
 
         $this->assertEquals($values, $this->storage->get());
         $this->assertEquals('Test name', $this->persistentRepository->getItems()['test.name']->getValue());
+    }
+
+    /**
+     * @depends testSave
+     */
+    public function testSynchronize()
+    {
+        $this->persistentRepository->setItems([
+            'test.name',
+        ]);
+
+        $this->persistentRepository->set('test.name', 'Test name');
+        $this->persistentRepository->synchronize();
+
+        $this->assertEquals(['test.name' => 'Test name'], $this->storage->get());
     }
 
     /**
@@ -189,5 +205,47 @@ class PersistentRepositoryTest extends TestCase
         $this->assertEquals(['some' => 'array'], $this->persistentRepository->getItems()['test.array']->getValue());
 
         $this->assertTrue(is_string($this->storage->get()['test.array']));
+    }
+
+    /**
+     * Data provider for {@link testLazyRestore()}
+     *
+     * @return array test data.
+     */
+    public function dataProviderLazyRestore(): array
+    {
+        return [
+            ['another', false],
+            ['foo.another', false],
+            ['bar-with-suffix', false],
+            ['foo.name', true],
+            ['foo', true],
+            ['bar.block.nested', true],
+        ];
+    }
+
+    /**
+     * @depends testRestore
+     *
+     * @dataProvider dataProviderLazyRestore
+     *
+     * @param  string  $key config key.
+     * @param  bool  $allowRestore whether values should be restored from storage.
+     */
+    public function testLazyRestore(string $key, bool $allowRestore)
+    {
+        $storage = $this->getMockBuilder(StorageContact::class)
+            ->getMock();
+
+        $persistentRepository = (new PersistentRepository($this->repository, $storage))
+            ->setItems([
+                'foo.name',
+                'bar.block',
+            ]);
+
+        $storage->expects($allowRestore ? $this->once() : $this->never())
+            ->method('get');
+
+        $persistentRepository->get($key);
     }
 }
