@@ -381,6 +381,70 @@ You can operate [[\Illuminatech\Config\Item]] interface during HTML form input c
 ```
 
 
+## Typecast <span id="typecast"></span>
+
+You may operate complex type values like arrays as a persistent ones. In order to do so, you should specify config item
+typecasting via [[\Illuminatech\Config\Item::$cast]]. For example:
+
+```php
+<?php
+
+use Illuminate\Config\Repository;
+use Illuminatech\Config\PersistentRepository;
+
+$sourceConfigRepository = new Repository([
+    'some' => [
+        'array' => ['one', 'two', 'three'],
+    ],
+]);
+
+$persistentConfigRepository = new PersistentRepository($sourceConfigRepository, ...);
+$persistentConfigRepository->setItems([
+    'some.array' => [
+        'cast' => 'array', // cast value from persistent storage to array
+        'rules' => ['sometimes', 'require', 'array'],
+    ],
+]);
+
+$persistentConfigRepository->save([
+    'some.array' => ['five', 'six'],
+]);
+
+$persistentConfigRepository->restore();
+
+var_dump($persistentConfigRepository->get('some.array') === ['five', 'six']); // outputs 'true'
+```
+
+
+## Encryption <span id="encryption"></span>
+
+In case you are planning to operate sensitive data like passwords, API keys and so on, you may want to store them as an
+encrypted strings rather then the plain ones. This can be achieved enabling [[\Illuminatech\Config\Item::$encrypt]].
+For example:
+
+```php
+<?php
+
+use Illuminate\Config\Repository;
+use Illuminatech\Config\PersistentRepository;
+
+$sourceConfigRepository = new Repository([
+    'some' => [
+        'apiKey' => 'secret',
+    ],
+]);
+
+$persistentConfigRepository = new PersistentRepository($sourceConfigRepository, ...);
+$persistentConfigRepository->setItems([
+    'some.apiKey' => [
+        'encrypt' => true, // encrypt value before placing it into the persistent storage
+    ],
+]);
+```
+
+Note that data encryption will impact the config repository performance.
+
+
 ## Garbage collection <span id="garbage-collection"></span>
 
 As your project evolves new configuration items may appear as well as some becomes redundant.

@@ -20,6 +20,7 @@
     "require-dev": {
         "illuminate/cache": "^5.8",
         "illuminate/config": "^5.8",
+        "illuminate/encryption": "^5.8",
         "illuminate/validation": "^5.8"
     },
     "autoload": {

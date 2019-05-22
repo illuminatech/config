@@ -9,6 +9,7 @@ namespace Illuminatech\Config;
 
 use RuntimeException;
 use InvalidArgumentException;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Support\Arrayable;
 
@@ -58,6 +59,11 @@ class Item implements Arrayable
     public $cast;
 
     /**
+     * @var bool whether to encrypt value for the storage or not.
+     */
+    public $encrypt = false;
+
+    /**
      * @var \Illuminate\Contracts\Config\Repository config repository to store this item value.
      */
     private $repository;
@@ -84,6 +90,7 @@ class Item implements Arrayable
         $this->hint = $config['hint'] ?? null;
         $this->rules = $config['rules'] ?? ['sometimes', 'required'];
         $this->cast = $config['cast'] ?? null;
+        $this->encrypt = $config['encrypt'] ?? null;
     }
 
     /**
@@ -150,15 +157,13 @@ class Item implements Arrayable
     {
         $this->setValue($value);
 
-        if ($this->cast === null) {
-            return $value;
+        $value = $this->serializeValue($value);
+
+        if ($this->encrypt) {
+            $value = $this->encrypt($value);
         }
 
-        if ($value === null || is_scalar($value)) {
-            return $value;
-        }
-
-        return json_encode($value);
+        return $value;
     }
 
     /**
@@ -169,6 +174,10 @@ class Item implements Arrayable
      */
     public function restoreValue($value)
     {
+        if ($this->encrypt) {
+            $value = $this->decrypt($value);
+        }
+
         $value = $this->castValue($value);
 
         $this->setValue($value);
@@ -192,7 +201,26 @@ class Item implements Arrayable
     }
 
     /**
-     * Typecasts raw value to the actual one according to {@link $cast} value.
+     * Prepares raw value for the persistent storage according to {@link $cast} value.
+     *
+     * @param  mixed  $value raw value.
+     * @return mixed serialized value.
+     */
+    protected function serializeValue($value)
+    {
+        if ($this->cast === null) {
+            return $value;
+        }
+
+        if ($value === null || is_scalar($value)) {
+            return $value;
+        }
+
+        return json_encode($value);
+    }
+
+    /**
+     * Typecasts raw value from persistent storage to the actual one according to {@link $cast} value.
      *
      * @param  string  $value value from persistent storage.
      * @return mixed actual value after typecast.
@@ -228,6 +256,16 @@ class Item implements Arrayable
             default:
                 throw new InvalidArgumentException('Unsupported "'.get_class($this).'::$cast" value: '.print_r($this->cast, true));
         }
+    }
+
+    protected function encrypt($value)
+    {
+        return Crypt::encryptString($value);
+    }
+
+    protected function decrypt($value)
+    {
+        return Crypt::decryptString($value);
     }
 
     /**

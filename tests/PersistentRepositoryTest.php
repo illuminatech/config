@@ -282,6 +282,30 @@ class PersistentRepositoryTest extends TestCase
     }
 
     /**
+     * @depends testRestore
+     */
+    public function testEncrypt()
+    {
+        $this->persistentRepository->setItems([
+            'test.crypt' => [
+                'encrypt' => true,
+            ],
+        ]);
+
+        $values = [
+            'test.crypt' => 'crypt value',
+        ];
+        $this->persistentRepository->save($values);
+
+        $storedValues = $this->storage->get();
+        $this->assertNotEquals('crypt value', $storedValues['test.crypt']);
+
+        $this->persistentRepository->restore();
+
+        $this->assertSame('crypt value', $this->persistentRepository->get('test.crypt'));
+    }
+
+    /**
      * Data provider for {@link testLazyRestore()}
      *
      * @return array test data.

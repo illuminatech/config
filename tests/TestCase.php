@@ -2,8 +2,10 @@
 
 namespace Illuminatech\Config\Test;
 
+use Illuminate\Support\Str;
 use Illuminate\Validation\Factory;
 use Illuminate\Container\Container;
+use Illuminate\Encryption\Encrypter;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Translation\FileLoader;
@@ -90,6 +92,12 @@ class TestCase extends \PHPUnit\Framework\TestCase
 
         $this->app->singleton('validator', function (Container $app) {
             return new Factory($app->make('translator'), $app);
+        });
+
+        $this->app->singleton('encrypter', function (Container $app) {
+            $key = Str::random(16);
+
+            return new Encrypter($key);
         });
     }
 }
