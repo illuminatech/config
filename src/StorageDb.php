@@ -21,6 +21,19 @@ use Illuminate\Database\Connection;
  * });
  * ```
  *
+ * Instantiation example:
+ *
+ * ```php
+ * use Illuminatech\Config\StorageDb;
+ * use Illuminate\Support\Facades\App;
+ *
+ * $storage = (new StorageDb(App::make('db.connection')))
+ *     ->setTable('configs')
+ *     ->setKeyColumn('key')
+ *     ->setValueColumn('value')
+ *     ->setFilter(['category_id' => 'global']);
+ * ```
+ *
  * @see \Illuminatech\Config\StorageEloquent
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
@@ -129,5 +142,53 @@ class StorageDb implements StorageContact
             ->delete();
 
         return true;
+    }
+
+    // Self Configure :
+
+    /**
+     * @param  string  $table name of the table, which should store values.
+     * @return static self reference.
+     */
+    public function setTable(string $table): self
+    {
+        $this->table = $table;
+
+        return $this;
+    }
+
+    /**
+     * @param  string  $keyColumn name of the column, which should store config item key.
+     * @return static self reference.
+     */
+    public function setKeyColumn(string $keyColumn): self
+    {
+        $this->keyColumn = $keyColumn;
+
+        return $this;
+    }
+
+    /**
+     * @param  string  $valueColumn name of the column, which should store config item value.
+     * @return static self reference.
+     */
+    public function setValueColumn(string $valueColumn): self
+    {
+        $this->valueColumn = $valueColumn;
+
+        return $this;
+    }
+
+    /**
+     * @see \Illuminate\Database\Builder::where()
+     *
+     * @param  array  $filter filter condition for records query restriction.
+     * @return static self reference.
+     */
+    public function setFilter($filter): self
+    {
+        $this->filter = $filter;
+
+        return $this;
     }
 }

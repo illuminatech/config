@@ -15,6 +15,15 @@ use Illuminate\Support\Facades\File;
  * This storage provides good performance, but is not acceptable in case you have distributed web application with
  * several PHP instances and load-balancer.
  *
+ * Instantiation example:
+ *
+ * ```php
+ * use Illuminatech\Config\StoragePhp;
+ * use Illuminate\Support\Facades\App;
+ *
+ * $storage = new StoragePhp(App::make('path.storage').'/configs/global.php');
+ * ```
+ *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0
  */
@@ -30,7 +39,7 @@ class StoragePhp implements StorageContact
      *
      * @param  string  $fileName name of the file, which should be used to store values.
      */
-    public function __construct(string $fileName = '')
+    public function __construct(string $fileName)
     {
         $this->fileName = $fileName;
     }

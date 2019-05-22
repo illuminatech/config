@@ -228,4 +228,18 @@ class StorageDbTest extends TestCase
         $this->assertFalse(array_key_exists('test.name', $barStorage->get()));
         $this->assertEquals($fooValues, $fooStorage->get());
     }
+
+    public function testSelfConfigure()
+    {
+        $this->storage
+            ->setTable('test_table')
+            ->setKeyColumn('test_key')
+            ->setValueColumn('test_value')
+            ->setFilter(['test' => 'filter']);
+
+        $this->assertSame('test_table', $this->storage->table);
+        $this->assertSame('test_key', $this->storage->keyColumn);
+        $this->assertSame('test_value', $this->storage->valueColumn);
+        $this->assertSame(['test' => 'filter'], $this->storage->filter);
+    }
 }

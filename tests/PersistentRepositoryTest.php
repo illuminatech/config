@@ -346,4 +346,16 @@ class PersistentRepositoryTest extends TestCase
 
         $persistentRepository->get($key);
     }
+
+    public function testSelfConfigure()
+    {
+        $this->persistentRepository
+            ->setCacheKey('test-cache-key')
+            ->setCacheTtl(12345)
+            ->setGcEnabled(false);
+
+        $this->assertSame('test-cache-key', $this->persistentRepository->cacheKey);
+        $this->assertSame(12345, $this->persistentRepository->cacheTtl);
+        $this->assertSame(false, $this->persistentRepository->gcEnabled);
+    }
 }

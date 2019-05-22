@@ -1,7 +1,7 @@
 {
     "name": "illuminatech/config",
     "description": "Provides support for Laravel application runtime configuration managed in persistent storage",
-    "keywords": ["laravel", "configuration", "config", "runtime", "persistent", "database"],
+    "keywords": ["laravel", "configuration", "config", "repository", "runtime", "persistent", "database"],
     "license": "BSD-3-Clause",
     "support": {
         "issues": "https://github.com/illuminatech/config/issues",

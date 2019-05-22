@@ -40,6 +40,18 @@ use Illuminate\Database\Eloquent\Model;
  * }
  * ```
  *
+ * Instantiation example:
+ *
+ * ```php
+ * use App\Models\Config;
+ * use Illuminatech\Config\StorageEloquent;
+ *
+ * $storage = (new StorageEloquent(Config::class)
+ *     ->setKeyAttribute('key')
+ *     ->setValueAttribute('value')
+ *     ->setFilter(['category_id' => 'global']);
+ * ```
+ *
  * @see \Illuminate\Database\Eloquent\Model
  * @see \Illuminatech\Config\StorageDb
  *
@@ -145,5 +157,42 @@ class StorageEloquent implements StorageContact
             });
 
         return true;
+    }
+
+    // Self Configure :
+
+    /**
+     * @param  string  $keyAttribute name of the model attribute, which should store config item key.
+     * @return static self reference.
+     */
+    public function setKeyAttribute(string $keyAttribute): self
+    {
+        $this->keyAttribute = $keyAttribute;
+
+        return $this;
+    }
+
+    /**
+     * @param  string  $valueAttribute name of the model attribute, which should store config item value.
+     * @return static self reference.
+     */
+    public function setValueAttribute(string $valueAttribute): self
+    {
+        $this->valueAttribute = $valueAttribute;
+
+        return $this;
+    }
+
+    /**
+     * @see \Illuminate\Database\Eloquent\Builder::where()
+     *
+     * @param  array  $filter filter condition for records query restriction.
+     * @return static self reference.
+     */
+    public function setFilter($filter): self
+    {
+        $this->filter = $filter;
+
+        return $this;
     }
 }

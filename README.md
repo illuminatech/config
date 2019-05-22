@@ -64,11 +64,11 @@ $sourceConfigRepository = new Repository([
 
 $storage = new StorageDb(App::make('db.connection'));
 
-$persistentConfigRepository = new PersistentRepository($sourceConfigRepository, $storage);
-$persistentConfigRepository->setItems([
-    'foo.name',
-    'bar.enabled',
-]);
+$persistentConfigRepository = (new PersistentRepository($sourceConfigRepository, $storage))
+    ->setItems([
+        'foo.name',
+        'bar.enabled',
+    ]);
 
 echo $persistentConfigRepository->get('foo.name'); // returns value from database if present, otherwise the one from source repository, in this case - 'Foo'
 
@@ -98,16 +98,16 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->extend('config', function (Repository $originConfig) {
-            $storage = $this->app->make(StorageDb::class);
+            $storage = new StorageDb($this->app->make('db.connection'));
 
-            $newConfig = new PersistentRepository($originConfig, $storage);
-            $newConfig->setItems([
-                'mail.contact.address' => [
-                    'label' => 'Email address receiving contact messages',
-                    'rules' => ['sometimes', 'required', 'email'],
-                ],
-                // ...
-            ]);
+            $newConfig = (new PersistentRepository($originConfig, $storage))
+                ->setItems([
+                    'mail.contact.address' => [
+                        'label' => 'Email address receiving contact messages',
+                        'rules' => ['sometimes', 'required', 'email'],
+                    ],
+                    // ...
+                ]);
 
             return $newConfig;
         });
@@ -146,20 +146,20 @@ Here are some examples of item specifications:
 use Illuminatech\Config\Item;
 use Illuminatech\Config\PersistentRepository;
 
-$persistentConfigRepository = new PersistentRepository(...);
-$persistentConfigRepository->setItems([
-    'some.config.value',
-    'another.config.value' => [
-        'label' => 'Custom label',
-        'rules' => ['required', 'numeric'],
-    ],
-    [
-        'key' => 'array.config.value',
-        'rules' => ['required', 'array'],
-        'cast' => 'array',
-    ],
-    new Item(['key' => 'explicit.object']),
-]);
+$persistentConfigRepository = (new PersistentRepository(...))
+    ->setItems([
+        'some.config.value',
+        'another.config.value' => [
+            'label' => 'Custom label',
+            'rules' => ['required', 'numeric'],
+        ],
+        [
+            'key' => 'array.config.value',
+            'rules' => ['required', 'array'],
+            'cast' => 'array',
+        ],
+        new Item(['key' => 'explicit.object']),
+    ]);
 ```
 
 
@@ -188,10 +188,10 @@ first attempt to get config value from it.
 
 use Illuminatech\Config\PersistentRepository;
 
-$persistentConfigRepository = new PersistentRepository(...);
-$persistentConfigRepository->setItems([
-    'some.config',
-]);
+$persistentConfigRepository = (new PersistentRepository(...))
+    ->setItems([
+        'some.config',
+    ]);
 
 $value = $persistentConfigRepository->get('some.config'); // loads data from persistent storage automatically.
 ```
@@ -203,10 +203,10 @@ You may also manually fetch data from persistent storage using `restore()` metho
 
 use Illuminatech\Config\PersistentRepository;
 
-$persistentConfigRepository = new PersistentRepository(...);
-$persistentConfigRepository->setItems([
-    'some.config',
-]);
+$persistentConfigRepository = (new PersistentRepository(...))
+    ->setItems([
+        'some.config',
+    ]);
 
 $persistentConfigRepository->restore(); // loads/re-loads data from persistent storage
 ```
@@ -223,11 +223,11 @@ To save config data into persistent storage use method `save()`:
 
 use Illuminatech\Config\PersistentRepository;
 
-$persistentConfigRepository = new PersistentRepository(...);
-$persistentConfigRepository->setItems([
-    'some.config',
-    'another.config',
-]);
+$persistentConfigRepository = (new PersistentRepository(...))
+    ->setItems([
+        'some.config',
+        'another.config',
+    ]);
 
 $persistentConfigRepository->save([
     'some.config' => 'some persistent value',
@@ -243,11 +243,11 @@ saved into the persistent storage. However, you may use `synchronize()` method t
 
 use Illuminatech\Config\PersistentRepository;
 
-$persistentConfigRepository = new PersistentRepository(...);
-$persistentConfigRepository->setItems([
-    'some.config',
-    'another.config',
-]);
+$persistentConfigRepository = (new PersistentRepository(...))
+    ->setItems([
+        'some.config',
+        'another.config',
+    ]);
 
 $persistentConfigRepository->set('some.config', 'new value'); // no changes at the persistent storage at this point
 
@@ -268,10 +268,10 @@ $sourceConfigRepository = new Repository([
     ],
 ]);
 
-$persistentConfigRepository = new PersistentRepository($sourceConfigRepository, ...);
-$persistentConfigRepository->setItems([
-    'some.config',
-]);
+$persistentConfigRepository = (new PersistentRepository($sourceConfigRepository, ...))
+    ->setItems([
+        'some.config',
+    ]);
 
 $persistentConfigRepository->save([
     'some.config' => 'new value',
@@ -285,6 +285,34 @@ echo $persistentConfigRepository->get('some.config'); // outputs 'original value
 ```
 
 You can also use `resetValue()` method to reset particular config key only.
+
+
+## Caching <span id="caching"></span>
+
+You can use [PSR-16](https://www.php-fig.org/psr/psr-16/) compatible cache storage to improve performance of the config item
+retrieval from persistent storage. For example:
+
+```php
+<?php
+
+use Illuminate\Config\Repository;
+use Illuminate\Support\Facades\App;
+use Illuminatech\Config\PersistentRepository;
+
+$sourceConfigRepository = new Repository([
+    'some' => [
+        'config' => 'original value',
+    ],
+]);
+
+$persistentConfigRepository = (new PersistentRepository($sourceConfigRepository, ...))
+    ->setItems([
+        'some.config',
+    ])
+    ->setCache(App::make('cache.store'))
+    ->setCacheKey('global-config')
+    ->setCacheTtl(3600 * 24);
+```
 
 
 ## Validation <span id="validation"></span>
@@ -398,13 +426,13 @@ $sourceConfigRepository = new Repository([
     ],
 ]);
 
-$persistentConfigRepository = new PersistentRepository($sourceConfigRepository, ...);
-$persistentConfigRepository->setItems([
-    'some.array' => [
-        'cast' => 'array', // cast value from persistent storage to array
-        'rules' => ['sometimes', 'require', 'array'],
-    ],
-]);
+$persistentConfigRepository = (new PersistentRepository($sourceConfigRepository, ...))
+    ->setItems([
+        'some.array' => [
+            'cast' => 'array', // cast value from persistent storage to array
+            'rules' => ['sometimes', 'require', 'array'],
+        ],
+    ]);
 
 $persistentConfigRepository->save([
     'some.array' => ['five', 'six'],
@@ -434,12 +462,12 @@ $sourceConfigRepository = new Repository([
     ],
 ]);
 
-$persistentConfigRepository = new PersistentRepository($sourceConfigRepository, ...);
-$persistentConfigRepository->setItems([
-    'some.apiKey' => [
-        'encrypt' => true, // encrypt value before placing it into the persistent storage
-    ],
-]);
+$persistentConfigRepository = (new PersistentRepository($sourceConfigRepository, ...))
+    ->setItems([
+        'some.apiKey' => [
+            'encrypt' => true, // encrypt value before placing it into the persistent storage
+        ],
+    ]);
 ```
 
 Note that data encryption will impact the config repository performance.
@@ -472,10 +500,10 @@ $storage->save([
     'obsolete.config' => 'obsolete value',
 ]);
 
-$persistentConfigRepository = new PersistentRepository($sourceConfigRepository, $storage);
-$persistentConfigRepository->setItems([
-    'some.config',
-]);
+$persistentConfigRepository = (new PersistentRepository($sourceConfigRepository, $storage))
+    ->setItems([
+        'some.config',
+    ]);
 
 $persistentConfigRepository->gc(); // removes 'obsolete.config' from storage
 ```

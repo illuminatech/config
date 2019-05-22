@@ -31,23 +31,24 @@ use Illuminate\Contracts\Config\Repository as RepositoryContract;
  * ```php
  * use Illuminatech\Config\StorageDb;
  * use Illuminate\Support\ServiceProvider;
+ * use Illuminate\Contracts\Config\Repository;
  * use Illuminatech\Config\PersistentRepository;
  *
  * class AppServiceProvider extends ServiceProvider
  * {
  *     public function register()
  *     {
- *         $this->app->extend('config', function ($originConfig) {
- *             $storage = $this->app->make(StorageDb::class);
+ *         $this->app->extend('config', function (Repository $originConfig) {
+ *             $storage = new StorageDb($this->app->make('db.connection'));
  *
- *             $newConfig = new PersistentRepository($originConfig, $storage);
- *             $newConfig->setItems([
- *                 'mail.contact.address' => [
- *                     'label' => 'Email address receiving contact messages',
- *                     'rules' => ['sometimes', 'required', 'email'],
- *                 ],
- *                 // ...
- *             ]);
+ *             $newConfig = (new PersistentRepository($originConfig, $storage))
+ *                 ->setItems([
+ *                     'mail.contact.address' => [
+ *                         'label' => 'Email address receiving contact messages',
+ *                         'rules' => ['sometimes', 'required', 'email'],
+ *                     ],
+ *                     // ...
+ *                 ]);
  *
  *             return $newConfig;
  *         });
@@ -63,7 +64,7 @@ use Illuminate\Contracts\Config\Repository as RepositoryContract;
 class PersistentRepository implements ArrayAccess, RepositoryContract
 {
     /**
-     * @var string  key used to store values into the cache.
+     * @var string key used to store values into the cache.
      */
     public $cacheKey = __CLASS__;
 
@@ -622,5 +623,42 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
     public function offsetUnset($key)
     {
         $this->set($key, null);
+    }
+
+    // Self Configure :
+
+    /**
+     * @param  string  $cacheKey key used to store values into the cache.
+     * @return static self reference.
+     */
+    public function setCacheKey(string $cacheKey): self
+    {
+        $this->cacheKey = $cacheKey;
+
+        return $this;
+    }
+
+    /**
+     * @param  int|\DateInterval  $cacheTtl The TTL (e.g. lifetime) value for the cache.
+     * @return static self reference.
+     */
+    public function setCacheTtl($cacheTtl): self
+    {
+        $this->cacheTtl = $cacheTtl;
+
+        return $this;
+    }
+
+    /**
+     * @see gc()
+     *
+     * @param  bool  $gcEnabled whether automatic garbage collection should take place on values saving.
+     * @return static self reference.
+     */
+    public function setGcEnabled(bool $gcEnabled): self
+    {
+        $this->gcEnabled = $gcEnabled;
+
+        return $this;
     }
 }
