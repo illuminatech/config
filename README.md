@@ -172,6 +172,7 @@ Following storages are available within this extension:
 
  - [[\Illuminatech\Config\StorageDb]] - stores configuration inside relational database;
  - [[\Illuminatech\Config\StorageEloquent]] - stores configuration using Eloquent models;
+ - [[\Illuminatech\Config\StoragePhp]] - stores configuration in local PHP files;
  - [[\Illuminatech\Config\StorageArray]] - stores configuration in runtime memory;
 
 Please refer to the particular storage class for more details.

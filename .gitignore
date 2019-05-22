@@ -27,3 +27,6 @@ composer.phar
 phpunit.phar
 # local phpunit config
 /phpunit.xml
+
+# test runtime files
+/tests/storage
