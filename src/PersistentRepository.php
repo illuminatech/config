@@ -266,28 +266,40 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
     }
 
     /**
-     * Clears all config values in persistent storage.
+     * Clears all config values in persistent storage, restoring original values to repository.
      *
-     * @return bool success.
+     * @return static self reference.
      */
-    public function clear(): bool
+    public function reset(): self
     {
         $this->deleteCached();
 
-        return $this->storage->clear();
+        $this->storage->clear();
+
+        $this->getItems()->map(function (Item $item) {
+            $item->resetValue();
+        });
+
+        return $this;
     }
 
     /**
-     * Clear value, saved in persistent storage, for the specified item.
+     * Clear value, saved in persistent storage, for the specified item, restoring its original value.
      *
      * @param  string  $key the key of the item to be cleared.
-     * @return bool success.
+     * @return static self reference.
      */
-    public function clearValue($key): bool
+    public function resetValue($key): self
     {
         $this->deleteCached();
 
-        return $this->storage->clearValue($key);
+        $this->storage->clearValue($key);
+
+        $this->getItems()->where('key', $key)->map(function (Item $item) {
+            $item->resetValue();
+        });
+
+        return $this;
     }
 
     /**

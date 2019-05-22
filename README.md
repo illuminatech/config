@@ -179,6 +179,112 @@ Please refer to the particular storage class for more details.
 
 ## Saving and restoring data <span id="saving-restoring-data"></span>
 
+[[\Illuminatech\Config\PersistentRepository]] will automatically retrieve config item values from persistent storage on the
+first attempt to get config value from it.
+
+```php
+<?php
+
+use Illuminatech\Config\PersistentRepository;
+
+$persistentConfigRepository = new PersistentRepository(...);
+$persistentConfigRepository->setItems([
+    'some.config',
+]);
+
+$value = $persistentConfigRepository->get('some.config'); // loads data from persistent storage automatically.
+```
+
+You may also manually fetch data from persistent storage using `restore()` method:
+
+```php
+<?php
+
+use Illuminatech\Config\PersistentRepository;
+
+$persistentConfigRepository = new PersistentRepository(...);
+$persistentConfigRepository->setItems([
+    'some.config',
+]);
+
+$persistentConfigRepository->restore(); // loads/re-loads data from persistent storage
+```
+
+**Heads up!** Any error or exception, which appears during values restoration, will be automatically suppressed. This is 
+done to avoid application blocking in case storage is not yet ready for usage, for example: database table does not yet exist.
+Storage failure error will appear only at the application log. You should manually test value restoration is working at
+your application to avoid unexpected behavior.
+
+To save config data into persistent storage use method `save()`:
+
+```php
+<?php
+
+use Illuminatech\Config\PersistentRepository;
+
+$persistentConfigRepository = new PersistentRepository(...);
+$persistentConfigRepository->setItems([
+    'some.config',
+    'another.config',
+]);
+
+$persistentConfigRepository->save([
+    'some.config' => 'some persistent value',
+    'another.config' => 'another persistent value',
+]);
+```
+
+Changes made via regular config repository interface (e.g. via methods `set()`, `push()` and so on) will not be automatically
+saved into the persistent storage. However, you may use `synchronize()` method to save current config item values into it.
+
+```php
+<?php
+
+use Illuminatech\Config\PersistentRepository;
+
+$persistentConfigRepository = new PersistentRepository(...);
+$persistentConfigRepository->setItems([
+    'some.config',
+    'another.config',
+]);
+
+$persistentConfigRepository->set('some.config', 'new value'); // no changes at the persistent storage at this point
+
+$persistentConfigRepository->synchronize(); // save values to the persistent storage
+```
+
+Method `reset()` clears all data saved to the persistent storage, restoring original (e.g. default) config repository values.
+
+```php
+<?php
+
+use Illuminate\Config\Repository;
+use Illuminatech\Config\PersistentRepository;
+
+$sourceConfigRepository = new Repository([
+    'some' => [
+        'config' => 'original value',
+    ],
+]);
+
+$persistentConfigRepository = new PersistentRepository($sourceConfigRepository, ...);
+$persistentConfigRepository->setItems([
+    'some.config',
+]);
+
+$persistentConfigRepository->save([
+    'some.config' => 'new value',
+]);
+
+echo $persistentConfigRepository->get('some.config'); // outputs 'new value'
+
+$persistentConfigRepository->reset(); // clears data in the persistent storage
+
+echo $persistentConfigRepository->get('some.config'); // outputs 'original value'
+```
+
+You can also use `resetValue()` method to reset particular config key only.
+
 
 ## Validation <span id="validation"></span>
 
@@ -229,7 +335,7 @@ class ConfigController extends Controller
     
     public function __construct(Container $app)
     {
-        $this->config = $app->get('config')->restore();
+        $this->config = $app->get('config');
     }
     
     public function index()
@@ -247,6 +353,13 @@ class ConfigController extends Controller
     
         return back()->with('status', 'success');
     }
+    
+    public function restoreDefaults()
+    {
+        $this->config->reset();
+        
+        return back()->with('status', 'success');
+    }
 }
 ```
 
@@ -257,7 +370,9 @@ You can operate [[\Illuminatech\Config\Item]] interface during HTML form input c
 <form ...>
 ...
 @foreach($items as $item)
+    <label>{{$item->label}}</label>
     <input type="text" name="{{$item->id}}" value="{{$item->getValue()}}">
+    <p>{{$item->hint}}</p>
 @endforeach
 ...
 </form>

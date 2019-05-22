@@ -114,6 +114,60 @@ class PersistentRepositoryTest extends TestCase
     }
 
     /**
+     * @depends testRestore
+     */
+    public function testReset()
+    {
+        $this->persistentRepository->setItems([
+            'test.name',
+            'test.title',
+        ]);
+
+        $this->repository->set('test.name', 'origin name');
+        $this->repository->set('test.title', 'origin title');
+
+        $values = [
+            'test.name' => 'New name',
+            'test.title' => 'New title',
+        ];
+        $this->persistentRepository->save($values);
+
+        $this->persistentRepository->reset();
+
+        $this->assertSame([], $this->storage->get());
+
+        $this->assertSame('origin name', $this->repository->get('test.name'));
+        $this->assertSame('origin title', $this->repository->get('test.title'));
+    }
+
+    /**
+     * @depends testReset
+     */
+    public function testResetValue()
+    {
+        $this->persistentRepository->setItems([
+            'test.name',
+            'test.title',
+        ]);
+
+        $this->repository->set('test.name', 'origin name');
+        $this->repository->set('test.title', 'origin title');
+
+        $values = [
+            'test.name' => 'New name',
+            'test.title' => 'New title',
+        ];
+        $this->persistentRepository->save($values);
+
+        $this->persistentRepository->resetValue('test.title');
+
+        $this->assertSame(['test.name' => 'New name'], $this->storage->get());
+
+        $this->assertSame('New name', $this->repository->get('test.name'));
+        $this->assertSame('origin title', $this->repository->get('test.title'));
+    }
+
+    /**
      * @depends testSetupItems
      */
     public function testValidate()
@@ -180,7 +234,7 @@ class PersistentRepositoryTest extends TestCase
 
         $this->assertEquals('Cached name', $this->persistentRepository->getItems()['test.name']->getValue());
 
-        $this->persistentRepository->clear();
+        $this->persistentRepository->reset();
         $this->assertFalse($cache->has($this->persistentRepository->cacheKey));
     }
 

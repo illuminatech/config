@@ -63,6 +63,11 @@ class Item implements Arrayable
     private $repository;
 
     /**
+     * @var mixed origin (before apply persistent storage) value of this item.
+     */
+    private $originValue;
+
+    /**
      * Constructor.
      *
      * @param  array  $config this item properties to be set in format: [name => value].
@@ -90,6 +95,7 @@ class Item implements Arrayable
     public function setRepository(Repository $configRepository): self
     {
         $this->repository = $configRepository;
+        $this->originValue = null;
 
         return $this;
     }
@@ -125,6 +131,10 @@ class Item implements Arrayable
      */
     public function setValue($value): self
     {
+        if ($this->originValue === null) {
+            $this->originValue['value'] = $this->getValue();
+        }
+
         $this->getRepository()->set($this->key, $value);
 
         return $this;
@@ -164,6 +174,21 @@ class Item implements Arrayable
         $this->setValue($value);
 
         return $value;
+    }
+
+    /**
+     * Restores original (before apply persistent storage) value of this item.
+     *
+     * @return static self reference.
+     */
+    public function resetValue(): self
+    {
+        if ($this->originValue !== null) {
+            $this->setValue($this->originValue['value']);
+            $this->originValue = null;
+        }
+
+        return $this;
     }
 
     /**
