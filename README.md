@@ -379,3 +379,42 @@ You can operate [[\Illuminatech\Config\Item]] interface during HTML form input c
 </form>
 ...
 ```
+
+
+## Garbage collection <span id="garbage-collection"></span>
+
+As your project evolves new configuration items may appear as well as some becomes redundant.
+[[\Illuminatech\Config\PersistentRepository]] automatically ignores any value in persistent storage in case it has no
+matching config item set by `setItems()`. Thus stored obsolete values will not affect config repository anyway, however
+they still may consume extra space inside the storage. You may manually remove all obsolete values from the storage,
+using `gc()` method:
+
+```php
+<?php
+
+use Illuminate\Config\Repository;
+use Illuminatech\Config\StorageDb;
+use Illuminatech\Config\PersistentRepository;
+
+$sourceConfigRepository = new Repository([
+    'some' => [
+        'config' => 'original value',
+    ],
+]);
+
+$storage = new StorageDb(...);
+$storage->save([
+    'some.config' => 'some value',
+    'obsolete.config' => 'obsolete value',
+]);
+
+$persistentConfigRepository = new PersistentRepository($sourceConfigRepository, $storage);
+$persistentConfigRepository->setItems([
+    'some.config',
+]);
+
+$persistentConfigRepository->gc(); // removes 'obsolete.config' from storage
+```
+
+In case [[Illuminatech\Config\PersistentRepository::$gcEnabled]] enabled garbage collection will be performed automatically
+each time config values are saved via `save()` or `synchronize()` method.

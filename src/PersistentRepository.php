@@ -73,6 +73,12 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
     public $cacheTtl = 3600 * 24;
 
     /**
+     * @var bool whether automatic garbage collection should take place on values saving.
+     * @see gc()
+     */
+    public $gcEnabled = true;
+
+    /**
      * @var \Illuminate\Contracts\Config\Repository wrapped config repository.
      */
     private $repository;
@@ -210,6 +216,10 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
 
         $this->setCached($storeValues);
 
+        if ($this->gcEnabled) {
+            $this->gc();
+        }
+
         return $this;
     }
 
@@ -298,6 +308,26 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
         $this->getItems()->where('key', $key)->map(function (Item $item) {
             $item->resetValue();
         });
+
+        return $this;
+    }
+
+    /**
+     * Clears keys in the persistent storage, which have no match to currently configured {@link $items}.
+     *
+     * @return static self reference.
+     */
+    public function gc(): self
+    {
+        $existingValues = $this->storage->get();
+
+        $itemKeys = $this->getItemKeys();
+
+        foreach ($existingValues as $key => $value) {
+            if (! in_array($key, $itemKeys, true)) {
+                $this->storage->clearValue($key);
+            }
+        }
 
         return $this;
     }

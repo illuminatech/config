@@ -209,6 +209,25 @@ class PersistentRepositoryTest extends TestCase
     /**
      * @depends testRestore
      */
+    public function testGc()
+    {
+        $this->persistentRepository->setItems([
+            'test.name',
+        ]);
+
+        $this->storage->save([
+            'test.name' => 'test name',
+            'test.obsolete' => 'test obsolete',
+        ]);
+
+        $this->persistentRepository->gc();
+
+        $this->assertSame(['test.name' => 'test name'], $this->storage->get());
+    }
+
+    /**
+     * @depends testRestore
+     */
     public function testCache()
     {
         $cache = new CacheRepository(new ArrayStore());
