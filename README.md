@@ -2,11 +2,12 @@
     <a href="https://github.com/illuminatech" target="_blank">
         <img src="https://avatars1.githubusercontent.com/u/47185924" height="100px">
     </a>
-    <h1 align="center">Laravel Runtime Configuration Extension</h1>
+    <h1 align="center">Laravel Persistent Configuration Repository</h1>
     <br>
 </p>
 
-This extension provides support for application runtime configuration, loading config from database.
+This extension introduces persistent configuration repository for Laravel.
+Its usage in particular provides support for application runtime configuration, loading config from database.
 
 For license information check the [LICENSE](LICENSE.md)-file.
 
@@ -121,6 +122,9 @@ Then anytime you access 'config' service in your application via `config()` func
 or via service container you will interact with [[\Illuminatech\Config\PersistentRepository]] instance getting values modified
 by database data.
 
+> Note: this extension does not provide built in service provider for application config substitute as it might be not desired
+  for particular application, while [[\Illuminatech\Config\PersistentRepository]] usage is not limited with this task.
+
 
 ## Configuration items specification <span id="configuration-items-specification"></span>
 
@@ -135,6 +139,7 @@ These are:
  - 'hint' - string, verbose description for the config value or input hint.
  - 'rules' - array, value validation rules.
  - 'cast' - string, native type for the value to be cast to.
+ - 'encrypt' - bool, whether to encrypt value for the storage or not.
 
 Since only 'key' is mandatory item may be specified by single string defining this key.
 
@@ -253,6 +258,9 @@ $persistentConfigRepository->set('some.config', 'new value'); // no changes at t
 
 $persistentConfigRepository->synchronize(); // save values to the persistent storage
 ```
+
+> Tip: You may invoke `synchronize()` at the application [terminating stage](https://laravel.com/docs/5.8/middleware#terminable-middleware) ensuring all changes made
+  during application running are saved.
 
 Method `reset()` clears all data saved to the persistent storage, restoring original (e.g. default) config repository values.
 

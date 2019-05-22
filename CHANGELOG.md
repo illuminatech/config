@@ -1,5 +1,5 @@
-Laravel Runtime Configuration
-=============================
+Laravel Persistent Configuration Repository
+===========================================
 
 1.0.0 Under Development
 -----------------------
