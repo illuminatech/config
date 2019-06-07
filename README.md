@@ -447,7 +447,7 @@ $persistentConfigRepository = (new PersistentRepository($sourceConfigRepository,
     ->setItems([
         'some.array' => [
             'cast' => 'array', // cast value from persistent storage to array
-            'rules' => ['sometimes', 'require', 'array'],
+            'rules' => ['sometimes', 'required', 'array'],
         ],
     ]);
 
