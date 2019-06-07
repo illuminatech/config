@@ -15,16 +15,26 @@ For license information check the [LICENSE](LICENSE.md)-file.
 [![Total Downloads](https://poser.pugx.org/illuminatech/config/downloads.png)](https://packagist.org/packages/illuminatech/config)
 [![Build Status](https://travis-ci.org/illuminatech/config.svg?branch=master)](https://travis-ci.org/illuminatech/config)
 
+* [Installation](#installation)
+* [Usage](#usage)
+* [Configuration Items Specification](#configuration-items-specification)
+* [Configuration Storage](#configuration-storage)
+* [Saving And Restoring Data](#saving-and-restoring-data)
+* [Caching](#caching)
+* [Validation](#validation)
+* [Creating Configuration Web Interface](#creating-configuration-web-interface)
+* [Typecast](#typecast)
+* [Encryption](#encryption)
+* [Garbage Collection](#garbage-collection)
 
-Installation
-------------
+## Installation
 
 The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
 
 Either run
 
 ```
-php composer.phar require --prefer-dist illuminatech/config
+composer require illuminatech/config
 ```
 
 or add
@@ -36,12 +46,11 @@ or add
 to the require section of your composer.json.
 
 
-Usage
------
+## Usage
 
 This extension allows reconfiguration of already created config repository using data from the external storage like relational database.
 It provides special config repository class [[\Illuminatech\Config\PersistentRepository]], which wraps any given config repository,
-adding layer for saving and restoring of data from persistent storage.
+adding a layer for saving and restoring of data from persistent storage.
 
 ```php
 <?php
@@ -131,7 +140,7 @@ by database data.
 Config parts, which should be saved in the persistent storage are defined by [[\Illuminatech\Config\PersistentRepository::setItems()]],
 which accepts a list of [[\Illuminatech\Config\Item]] or configuration array for it.
 Each configuration item should define a key, which leads to the target value in source repository.
-Configuration item also have several properties, which supports creation of web interface for configuration setup.
+Configuration items also have several properties, which supports creation of web interface for configuration setup.
 These are:
 
  - 'id' - string, item unique ID in the list, this value will be used in request fields and form inputs.
@@ -171,7 +180,7 @@ $persistentConfigRepository = (new PersistentRepository(...))
 ## Configuration storage <span id="configuration-storage"></span>
 
 Declared configuration items may be saved into persistent storage and then retrieved from it.
-The actual item storage can be any class matching [[\Illuminatech\Config\StorageContact]] interface.
+The actual item storage can be any class matching [[\Illuminatech\Config\StorageContract]] interface.
 
 Following storages are available within this extension:
 
@@ -183,7 +192,7 @@ Following storages are available within this extension:
 Please refer to the particular storage class for more details.
 
 
-## Saving and restoring data <span id="saving-restoring-data"></span>
+## Saving and restoring data <span id="saving-and-restoring-data"></span>
 
 [[\Illuminatech\Config\PersistentRepository]] will automatically retrieve config item values from persistent storage on the
 first attempt to get config value from it.
@@ -455,7 +464,7 @@ var_dump($persistentConfigRepository->get('some.array') === ['five', 'six']); //
 ## Encryption <span id="encryption"></span>
 
 In case you are planning to operate sensitive data like passwords, API keys and so on, you may want to store them as an
-encrypted strings rather then the plain ones. This can be achieved enabling [[\Illuminatech\Config\Item::$encrypt]].
+encrypted strings rather than the plain ones. This can be achieved enabling [[\Illuminatech\Config\Item::$encrypt]].
 For example:
 
 ```php
