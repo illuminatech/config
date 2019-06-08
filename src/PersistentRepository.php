@@ -437,6 +437,10 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
      */
     private function isPersistentKey($key): bool
     {
+        if (is_array($key)) {
+            $key = \array_key_first($key);
+        }
+
         foreach ($this->getItemKeys() as $persistentKey) {
             $key = $key.'.';
             $persistentKey = $persistentKey.'.';
