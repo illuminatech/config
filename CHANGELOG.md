@@ -5,6 +5,7 @@ Laravel Persistent Configuration Repository
 -----------------------
 
 - Bug #2: Fixed ability to pass list of keys as an array to `PersistentRepository::get()` (klimov-paul)
+- Enh: Added `Item::$options` for the custom item options specification (klimov-paul)
 
 
 1.0.0, May 22, 2019

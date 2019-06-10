@@ -59,6 +59,22 @@ class Item implements Arrayable
     public $cast;
 
     /**
+     * @var array|null additional descriptive options for this item.
+     * This field may contain any data, which can be consumed by other part of the program.
+     * For example it may hold options for the from input composition:
+     *
+     * ```php
+     * [
+     *    'inputType' => 'text',
+     *    'inputCssClass' => 'config-input',
+     * ]
+     * ```
+     *
+     * @since 1.0.1
+     */
+    public $options;
+
+    /**
      * @var bool whether to encrypt value for the storage or not.
      */
     public $encrypt = false;
@@ -91,6 +107,7 @@ class Item implements Arrayable
         $this->rules = $config['rules'] ?? ['sometimes', 'required'];
         $this->cast = $config['cast'] ?? null;
         $this->encrypt = $config['encrypt'] ?? null;
+        $this->options = $config['options'] ?? null;
     }
 
     /**
@@ -258,11 +275,23 @@ class Item implements Arrayable
         }
     }
 
+    /**
+     * Encrypts value for the storage.
+     *
+     * @param  string|mixed  $value raw value.
+     * @return string encrypted value.
+     */
     protected function encrypt($value)
     {
         return Crypt::encryptString($value);
     }
 
+    /**
+     * Decrypts value from the storage.
+     *
+     * @param  string|mixed  $value encrypted value.
+     * @return string decrypted value.
+     */
     protected function decrypt($value)
     {
         return Crypt::decryptString($value);

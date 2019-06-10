@@ -416,6 +416,9 @@ You can operate [[\Illuminatech\Config\Item]] interface during HTML form input c
 ...
 ```
 
+> Tip: you can use [[\Illuminatech\Config\Item::$options]] to setup configuration for the dynamic form inputs, specifying
+  input type, CSS class and so on inside of it.
+
 
 ## Typecast <span id="typecast"></span>
 
