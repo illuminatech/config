@@ -305,6 +305,67 @@ class PersistentRepositoryTest extends TestCase
         $this->assertSame('crypt value', $this->persistentRepository->get('test.crypt'));
     }
 
+    public function testConfigRepositoryContract()
+    {
+        $this->repository->set('test', [
+            'foo' => 'test foo',
+            'array' => ['one', 'two'],
+        ]);
+        $this->repository->set('origin', [
+            'foo' => 'origin foo',
+            'bar' => 'origin bar',
+        ]);
+
+        $this->persistentRepository->setItems([
+            'test.foo',
+            'test.bar',
+        ]);
+
+        $this->assertSame($this->repository->get('test.foo'), $this->persistentRepository->get('test.foo'));
+        $this->assertSame($this->repository->has('test.foo'), $this->persistentRepository->has('test.foo'));
+        $this->assertTrue($this->persistentRepository->has('test.bar'));
+
+        $this->assertSame($this->repository->get(['origin.foo', 'origin.bar']), $this->persistentRepository->get(['origin.foo', 'origin.bar']));
+
+        $this->persistentRepository->set('new.bar', 'new bar');
+        $this->assertSame('new bar', $this->repository->get('new.bar'));
+
+        $this->persistentRepository->prepend('test.array', 'zero');
+        $this->assertSame(['zero', 'one', 'two'], $this->repository->get('test.array'));
+
+        $this->persistentRepository->push('test.array', 'three');
+        $this->assertSame(['zero', 'one', 'two', 'three'], $this->repository->get('test.array'));
+    }
+
+    /**
+     * @depends testConfigRepositoryContract
+     */
+    public function testArrayAccess()
+    {
+        $this->repository->set('test', [
+            'foo' => 'test foo',
+        ]);
+        $this->repository->set('origin', [
+            'foo' => 'origin foo',
+            'bar' => 'origin bar',
+        ]);
+
+        $this->persistentRepository->setItems([
+            'test.foo',
+            'test.bar',
+        ]);
+
+        $this->assertSame($this->repository->get('test.foo'), $this->persistentRepository['test.foo']);
+        $this->assertSame($this->repository->has('test.foo'), isset($this->persistentRepository['test.foo']));
+        $this->assertTrue(isset($this->persistentRepository['test.bar']));
+
+        $this->persistentRepository['new.bar'] = 'new bar';
+        $this->assertSame('new bar', $this->repository->get('new.bar'));
+
+        unset($this->persistentRepository['new.bar']);
+        $this->assertNull($this->repository->get('new.bar'));
+    }
+
     /**
      * Data provider for {@link testLazyRestore()}
      *
@@ -319,6 +380,8 @@ class PersistentRepositoryTest extends TestCase
             ['foo.name', true],
             ['foo', true],
             ['bar.block.nested', true],
+            [['foo.name', 'foo.another'], true],
+            [['foo.another', 'foo.name'], true],
         ];
     }
 
@@ -327,10 +390,10 @@ class PersistentRepositoryTest extends TestCase
      *
      * @dataProvider dataProviderLazyRestore
      *
-     * @param  string  $key config key.
+     * @param  array|string  $key config key.
      * @param  bool  $allowRestore whether values should be restored from storage.
      */
-    public function testLazyRestore(string $key, bool $allowRestore)
+    public function testLazyRestore($key, bool $allowRestore)
     {
         $storage = $this->getMockBuilder(StorageContact::class)
             ->getMock();

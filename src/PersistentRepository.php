@@ -432,17 +432,23 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
      * Checks whether given config key matches some of keys from {@link $items}, e.g. whether the key should be saved
      * in persistent storage or not.
      *
-     * @param  string  $key config key.
+     * @param  iterable|string  $candidateKey config key.
      * @return bool whether given key is a persistent one or not.
      */
-    private function isPersistentKey($key): bool
+    private function isPersistentKey($candidateKey): bool
     {
-        foreach ($this->getItemKeys() as $persistentKey) {
-            $key = $key.'.';
-            $persistentKey = $persistentKey.'.';
+        if (! is_iterable($candidateKey)) {
+            $candidateKey = [$candidateKey];
+        }
 
-            if (strncmp($key, $persistentKey, min(strlen($key), strlen($persistentKey))) === 0) {
-                return true;
+        foreach ($candidateKey as $key) {
+            foreach ($this->getItemKeys() as $persistentKey) {
+                $key = $key.'.';
+                $persistentKey = $persistentKey.'.';
+
+                if (strncmp($key, $persistentKey, min(strlen($key), strlen($persistentKey))) === 0) {
+                    return true;
+                }
             }
         }
 
