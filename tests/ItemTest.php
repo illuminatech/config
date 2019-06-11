@@ -60,7 +60,8 @@ class ItemTest extends TestCase
         $repository = new Repository;
 
         $item = (new Item([
-            'key' => 'some.key'
+            'key' => 'some.key',
+            'options' => ['some' => 'option'],
         ]))->setRepository($repository);
 
         $array = $item->toArray();
@@ -68,6 +69,7 @@ class ItemTest extends TestCase
         $this->assertSame($item->id, $array['id']);
         $this->assertSame($item->key, $array['key']);
         $this->assertSame($item->label, $array['label']);
+        $this->assertSame($item->options, $array['options']);
         $this->assertSame($item->getValue(), $array['value']);
     }
 }

@@ -309,6 +309,7 @@ class Item implements Arrayable
             'hint' => $this->hint,
             'rules' => $this->rules,
             'cast' => $this->cast,
+            'options' => $this->options,
             'value' => $this->getValue(),
         ];
     }

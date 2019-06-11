@@ -140,6 +140,7 @@ These are:
  - 'rules' - array, value validation rules.
  - 'cast' - string, native type for the value to be cast to.
  - 'encrypt' - bool, whether to encrypt value for the storage or not.
+ - 'options' - array, additional descriptive options for the item, which can be used as you see fit.
 
 Since only 'key' is mandatory item may be specified by single string defining this key.
 
