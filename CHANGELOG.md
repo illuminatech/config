@@ -1,8 +1,8 @@
 Laravel Persistent Configuration Repository
 ===========================================
 
-1.0.1 under development
------------------------
+1.0.1, June 11, 2019
+--------------------
 
 - Bug #2: Fixed ability to pass list of keys as an array to `PersistentRepository::get()` (klimov-paul)
 - Enh: Added `Item::$options` for the custom item options specification (klimov-paul)
