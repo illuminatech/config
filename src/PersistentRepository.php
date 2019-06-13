@@ -441,12 +441,14 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
             $candidateKey = [$candidateKey];
         }
 
-        foreach ($candidateKey as $key) {
+        foreach ($candidateKey as $key => $value) {
+            $searchKey = (is_numeric($key)) ? $value : $key;
+
             foreach ($this->getItemKeys() as $persistentKey) {
-                $key = $key.'.';
+                $searchKey = $searchKey.'.';
                 $persistentKey = $persistentKey.'.';
 
-                if (strncmp($key, $persistentKey, min(strlen($key), strlen($persistentKey))) === 0) {
+                if (strncmp($searchKey, $persistentKey, min(strlen($searchKey), strlen($persistentKey))) === 0) {
                     return true;
                 }
             }

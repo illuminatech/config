@@ -82,7 +82,7 @@ present in the source config repository will remain as it is.
 
 PersistentRepository fully decorates any config repository, matching [[\Illuminate\Contracts\Config\Repository]] and can substitute [[\Illuminate\Config\Repository]] instance.
 In particular this allows you to substitute regular Laravel config by [[\Illuminatech\Config\PersistentRepository]] instance,
-applying configuration from database to the entire application. You can so in your `AppServiceProvider` class. For example:
+applying configuration from database to the entire application. You can do so in your `AppServiceProvider` class. For example:
 
 ```php
 <?php

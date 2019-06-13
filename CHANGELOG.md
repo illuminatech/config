@@ -1,6 +1,12 @@
 Laravel Persistent Configuration Repository
 ===========================================
 
+1.0.2 under development
+-----------------------
+
+- Bug #3: Fixed retrieval fo multiple keys with default values via `PersistentRepository::get()` (klimov-paul)
+
+
 1.0.1, June 11, 2019
 --------------------
 

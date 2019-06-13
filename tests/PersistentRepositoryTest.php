@@ -326,6 +326,7 @@ class PersistentRepositoryTest extends TestCase
         $this->assertTrue($this->persistentRepository->has('test.bar'));
 
         $this->assertSame($this->repository->get(['origin.foo', 'origin.bar']), $this->persistentRepository->get(['origin.foo', 'origin.bar']));
+        $this->assertSame($this->repository->get(['origin.foo' => 'default']), $this->persistentRepository->get(['origin.foo' => 'default']));
 
         $this->persistentRepository->set('new.bar', 'new bar');
         $this->assertSame('new bar', $this->repository->get('new.bar'));
@@ -382,6 +383,10 @@ class PersistentRepositoryTest extends TestCase
             ['bar.block.nested', true],
             [['foo.name', 'foo.another'], true],
             [['foo.another', 'foo.name'], true],
+            [['bar.block' => ['default']], true],
+            [['another.block' => ['default']], false],
+            [['bar.block' => ['default' => 'value']], true],
+            [['another.block' => ['default' => 'value']], false],
         ];
     }
 
