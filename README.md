@@ -40,7 +40,7 @@ Usage
 -----
 
 This extension allows reconfiguration of already created config repository using data from the external storage like relational database.
-It provides special config repository class [[\Illuminatech\Config\PersistentRepository]], which wraps any given config repository,
+It provides special config repository class `\Illuminatech\Config\PersistentRepository`, which wraps any given config repository,
 adding a layer for saving and restoring of data from persistent storage.
 
 ```php
@@ -76,12 +76,12 @@ echo $persistentConfigRepository->get('foo.name'); // returns value from databas
 echo $persistentConfigRepository->get('other.value'); // keys, which are not specified as "items" always remain intact, in this case - always return 'Some'
 ```
 
-Config data, which should be saved in persistent storage defined via [[\Illuminatech\Config\PersistentRepository::setItems()]].
+Config data, which should be saved in persistent storage defined via `\Illuminatech\Config\PersistentRepository::setItems()`.
 Only keys, which are explicitly defined as "items", will be stored or retrieved from the persistent storage. Any other data
 present in the source config repository will remain as it is.
 
-PersistentRepository fully decorates any config repository, matching [[\Illuminate\Contracts\Config\Repository]] and can substitute [[\Illuminate\Config\Repository]] instance.
-In particular this allows you to substitute regular Laravel config by [[\Illuminatech\Config\PersistentRepository]] instance,
+PersistentRepository fully decorates any config repository, matching `\Illuminate\Contracts\Config\Repository` and can substitute `\Illuminate\Config\Repository` instance.
+In particular this allows you to substitute regular Laravel config by `\Illuminatech\Config\PersistentRepository` instance,
 applying configuration from database to the entire application. You can do so in your `AppServiceProvider` class. For example:
 
 ```php
@@ -118,18 +118,18 @@ class AppServiceProvider extends ServiceProvider
 }
 ```
 
-Then anytime you access 'config' service in your application via `config()` function, [[\Illuminate\Support\Facades\Config]] facade
-or via service container you will interact with [[\Illuminatech\Config\PersistentRepository]] instance getting values modified
+Then anytime you access 'config' service in your application via `config()` function, `\Illuminate\Support\Facades\Config` facade
+or via service container you will interact with `\Illuminatech\Config\PersistentRepository` instance getting values modified
 by database data.
 
 > Note: this extension does not provide built in service provider for application config substitute as it might be not desired
-  for particular application, while [[\Illuminatech\Config\PersistentRepository]] usage is not limited with this task.
+  for particular application, while `\Illuminatech\Config\PersistentRepository` usage is not limited with this task.
 
 
 ## Configuration items specification <span id="configuration-items-specification"></span>
 
-Config parts, which should be saved in the persistent storage are defined by [[\Illuminatech\Config\PersistentRepository::setItems()]],
-which accepts a list of [[\Illuminatech\Config\Item]] or configuration array for it.
+Config parts, which should be saved in the persistent storage are defined by `\Illuminatech\Config\PersistentRepository::setItems()`,
+which accepts a list of `\Illuminatech\Config\Item` or configuration array for it.
 Each configuration item should define a key, which leads to the target value in source repository.
 Configuration item also has several properties, which supports creation of web interface for configuration setup.
 These are:
@@ -172,21 +172,21 @@ $persistentConfigRepository = (new PersistentRepository(...))
 ## Configuration storage <span id="configuration-storage"></span>
 
 Declared configuration items may be saved into persistent storage and then retrieved from it.
-The actual item storage can be any class matching [[\Illuminatech\Config\StorageContract]] interface.
+The actual item storage can be any class matching `\Illuminatech\Config\StorageContract` interface.
 
 Following storages are available within this extension:
 
- - [[\Illuminatech\Config\StorageDb]] - stores configuration inside relational database;
- - [[\Illuminatech\Config\StorageEloquent]] - stores configuration using Eloquent models;
- - [[\Illuminatech\Config\StoragePhp]] - stores configuration in local PHP files;
- - [[\Illuminatech\Config\StorageArray]] - stores configuration in runtime memory;
+ - `\Illuminatech\Config\StorageDb` - stores configuration inside relational database;
+ - `\Illuminatech\Config\StorageEloquent` - stores configuration using Eloquent models;
+ - `\Illuminatech\Config\StoragePhp` - stores configuration in local PHP files;
+ - `\Illuminatech\Config\StorageArray` - stores configuration in runtime memory;
 
 Please refer to the particular storage class for more details.
 
 
 ## Saving and restoring data <span id="saving-and-restoring-data"></span>
 
-[[\Illuminatech\Config\PersistentRepository]] will automatically retrieve config item values from persistent storage on the
+`\Illuminatech\Config\PersistentRepository` will automatically retrieve config item values from persistent storage on the
 first attempt to get config value from it.
 
 ```php
@@ -327,7 +327,7 @@ $persistentConfigRepository = (new PersistentRepository($sourceConfigRepository,
 ## Validation <span id="validation"></span>
 
 Each configuration item comes with validation rules, which matches `['sometimes' ,'required']` by default. You can easily
-create a validation for the user input before config saving, using these rules, or use [[\Illuminatech\Config\PersistentRepository::validate()]].
+create a validation for the user input before config saving, using these rules, or use `\Illuminatech\Config\PersistentRepository::validate()`.
 For example:
 
 ```php
@@ -340,18 +340,18 @@ $validatedData = $config->validate($request->all()); // throws \Illuminate\Valid
 // ...
 ```
 
-You can also use [[\Illuminatech\Config\PersistentRepository::makeValidator()]] method to create a validator instance for manual processing.
+You can also use `\Illuminatech\Config\PersistentRepository::makeValidator()` method to create a validator instance for manual processing.
 
-**Heads up!** Watch for usage dot symbols ('.') inside the input in case you do not use [[\Illuminatech\Config\PersistentRepository::validate()]] method.
+**Heads up!** Watch for usage dot symbols ('.') inside the input in case you do not use `\Illuminatech\Config\PersistentRepository::validate()` method.
 By default Laravel considers dots in validation rules as array nested keys separator. You should either replace them
-by '->' string or manually define [[\Illuminatech\Config\Item::$id]] in the way it does not contain a dot.
+by '->' string or manually define `\Illuminatech\Config\Item::$id` in the way it does not contain a dot.
 
 
 ## Creating configuration web interface <span id="creating-configuration-web-interface"></span>
 
 One of the most common use case for this extension is creating a web interface, which allows control of application
 configuration in runtime.
-[[\Illuminatech\Config\PersistentRepository]] serves not only for applying of the configuration - it also helps to create an
+`\Illuminatech\Config\PersistentRepository` serves not only for applying of the configuration - it also helps to create an
 interface for configuration editing.
 
 The web controller for configuration management may look like following:
@@ -401,7 +401,7 @@ class ConfigController extends Controller
 }
 ```
 
-You can operate [[\Illuminatech\Config\Item]] interface during HTML form input composition. For example:
+You can operate `\Illuminatech\Config\Item` interface during HTML form input composition. For example:
 
 ```blade
 ...
@@ -417,14 +417,40 @@ You can operate [[\Illuminatech\Config\Item]] interface during HTML form input c
 ...
 ```
 
-> Tip: you can use [[\Illuminatech\Config\Item::$options]] to setup configuration for the dynamic form inputs, specifying
+> Tip: you can use `\Illuminatech\Config\Item::$options` to setup configuration for the dynamic form inputs, specifying
   input type, CSS class and so on inside of it.
+
+
+**Heads up!** Remember that PHP automatically replaces non-alphanumeric characters like dot ('.'), dash ('-') and so on
+inside request keys during native 'POST' parsing, making collection and validation for keys like 'config.some-key' impossible.
+You will need to setup `\Illuminatech\Config\Item::$id` value for each persistent configuration item manually, in case you
+going to submit values via regular 'POST' request. For example:
+
+```php
+<?php
+
+use Illuminatech\Config\PersistentRepository;
+
+$persistentConfigRepository = (new PersistentRepository(...))
+    ->setItems([
+        'some.config.value' => [
+            'id' => 'some_config_value',
+        ],
+        'another-config-value' => [
+            'id' => 'another_config_value',
+        ],
+        // ...
+    ]);
+```
+
+> Tip: you will not face this problem in case you submit configuration item values via REST API interface using JSON
+  format or via native (not spoofed) 'PUT' request.
 
 
 ## Typecast <span id="typecast"></span>
 
 You may operate complex type values like arrays as a persistent ones. In order to do so, you should specify config item
-typecasting via [[\Illuminatech\Config\Item::$cast]]. For example:
+typecasting via `\Illuminatech\Config\Item::$cast`. For example:
 
 ```php
 <?php
@@ -459,7 +485,7 @@ var_dump($persistentConfigRepository->get('some.array') === ['five', 'six']); //
 ## Encryption <span id="encryption"></span>
 
 In case you are planning to operate sensitive data like passwords, API keys and so on, you may want to store them as an
-encrypted strings rather than the plain ones. This can be achieved enabling [[\Illuminatech\Config\Item::$encrypt]].
+encrypted strings rather than the plain ones. This can be achieved enabling `\Illuminatech\Config\Item::$encrypt`.
 For example:
 
 ```php
@@ -488,7 +514,7 @@ Note that data encryption will impact the config repository performance.
 ## Garbage collection <span id="garbage-collection"></span>
 
 As your project evolves new configuration items may appear as well as some becomes redundant.
-[[\Illuminatech\Config\PersistentRepository]] automatically ignores any value in persistent storage in case it has no
+`\Illuminatech\Config\PersistentRepository` automatically ignores any value in persistent storage in case it has no
 matching config item set by `setItems()`. Thus stored obsolete values will not affect config repository anyway, however
 they still may consume extra space inside the storage. You may manually remove all obsolete values from the storage,
 using `gc()` method:
@@ -520,5 +546,5 @@ $persistentConfigRepository = (new PersistentRepository($sourceConfigRepository,
 $persistentConfigRepository->gc(); // removes 'obsolete.config' from storage
 ```
 
-In case [[Illuminatech\Config\PersistentRepository::$gcEnabled]] enabled garbage collection will be performed automatically
+In case `Illuminatech\Config\PersistentRepository::$gcEnabled` enabled garbage collection will be performed automatically
 each time config values are saved via `save()` or `synchronize()` method.

@@ -29,6 +29,8 @@ class Item implements Arrayable
     /**
      * @var string config parameter unique identifier.
      * This value will be used in request fields and form inputs.
+     * You should avoid usage of non-alphanumeric characters here, since PHP automatically replaces them with underscore ('_')
+     * during native POST request parsing, which may cause unexpected behavior.
      */
     public $id;
 
@@ -218,7 +220,7 @@ class Item implements Arrayable
     }
 
     /**
-     * Prepares raw value for the persistent storage according to {@link $cast} value.
+     * Prepares raw value for the persistent storage according to {@see $cast} value.
      *
      * @param  mixed  $value raw value.
      * @return mixed serialized value.
@@ -237,7 +239,7 @@ class Item implements Arrayable
     }
 
     /**
-     * Typecasts raw value from persistent storage to the actual one according to {@link $cast} value.
+     * Typecasts raw value from persistent storage to the actual one according to {@see $cast} value.
      *
      * @param  string  $value value from persistent storage.
      * @return mixed actual value after typecast.

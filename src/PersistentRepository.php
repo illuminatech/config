@@ -21,9 +21,9 @@ use Illuminate\Contracts\Config\Repository as RepositoryContract;
 /**
  * PersistentRepository is a configuration repository, which stores some of its data in persistent storage like database.
  *
- * Config data, which should be saved in persistent storage defined via {@link setItems()}. It will be automatically retrieved
- * on the first attempt to access data in this repository. It also can be done manually vai {@link restore()} method.
- * In order to save data to the persistent storage use method {@link save()}.
+ * Config data, which should be saved in persistent storage defined via {@see setItems()}. It will be automatically retrieved
+ * on the first attempt to access data in this repository. It also can be done manually vai {@see restore()} method.
+ * In order to save data to the persistent storage use method {@see save()}.
  *
  * PersistentRepository fully decorates the config repository and can substitute `Illuminate\Config\Repository` instance.
  * For example, you can replace Laravel standard configuration repository with this one:
@@ -314,7 +314,7 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
     }
 
     /**
-     * Clears keys in the persistent storage, which have no match to currently configured {@link $items}.
+     * Clears keys in the persistent storage, which have no match to currently configured {@see $items}.
      *
      * @return static self reference.
      */
@@ -429,7 +429,7 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
     }
 
     /**
-     * Checks whether given config key matches some of keys from {@link $items}, e.g. whether the key should be saved
+     * Checks whether given config key matches some of keys from {@see $items}, e.g. whether the key should be saved
      * in persistent storage or not.
      *
      * @param  iterable|string  $candidateKey config key.

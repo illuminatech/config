@@ -368,7 +368,7 @@ class PersistentRepositoryTest extends TestCase
     }
 
     /**
-     * Data provider for {@link testLazyRestore()}
+     * Data provider for {@see testLazyRestore()}
      *
      * @return array test data.
      */
