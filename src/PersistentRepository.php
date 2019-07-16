@@ -268,7 +268,13 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
                 continue;
             }
 
-            $items[$key]->restoreValue($value);
+            try {
+                // value post-processing may fail in case item settings changed, like adding encryption
+                $items[$key]->restoreValue($value);
+            } catch (Throwable $exception) {
+                $this->logException($exception);
+                continue;
+            }
         }
 
         $this->isRestored = true;

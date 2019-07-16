@@ -2,8 +2,10 @@
 
 namespace Illuminatech\Config\Test;
 
+use Psr\Log\NullLogger;
 use Illuminatech\Config\Item;
 use Illuminate\Cache\ArrayStore;
+use Illuminate\Support\Facades\Log;
 use Illuminatech\Config\StorageArray;
 use Illuminatech\Config\StorageContact;
 use Illuminatech\Config\PersistentRepository;
@@ -34,6 +36,8 @@ class PersistentRepositoryTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+
+        Log::swap(new NullLogger());
 
         $this->repository = new ConfigRepository();
         $this->storage = new StorageArray();
@@ -425,5 +429,40 @@ class PersistentRepositoryTest extends TestCase
         $this->assertSame('test-cache-key', $this->persistentRepository->cacheKey);
         $this->assertSame(12345, $this->persistentRepository->cacheTtl);
         $this->assertSame(false, $this->persistentRepository->gcEnabled);
+    }
+
+    /**
+     * @see https://github.com/illuminatech/config/issues/6
+     *
+     * @depends testEncrypt
+     */
+    public function testCorruptedData()
+    {
+        $this->repository->set([
+            'foo' => 'foo default',
+            'crypt' => 'crypt default',
+            'bar' => 'bar default',
+        ]);
+
+        $this->persistentRepository->setItems([
+            'foo',
+            'crypt' => [
+                'encrypt' => true,
+            ],
+            'bar',
+        ]);
+
+        $values = [
+            'foo' => 'foo value',
+            'crypt' => 'crypt value',
+            'bar' => 'bar value',
+        ];
+        $this->storage->save($values);
+
+        $this->persistentRepository->restore();
+
+        $this->assertSame('foo value', $this->persistentRepository->get('foo'));
+        $this->assertSame('bar value', $this->persistentRepository->get('bar'));
+        $this->assertSame('crypt default', $this->persistentRepository->get('crypt'));
     }
 }
