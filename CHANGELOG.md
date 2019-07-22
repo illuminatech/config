@@ -1,8 +1,8 @@
 Laravel Persistent Configuration Repository
 ===========================================
 
-1.0.3 Under Development
------------------------
+1.0.3, July 22, 2019
+--------------------
 
 - Bug #6: Fixed `PersistentRepository::restore()` throws an exception after certain `Item` config change like adding encryption (klimov-paul)
 
