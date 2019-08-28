@@ -125,8 +125,115 @@ by database data.
 > Note: this extension does not provide built in service provider for application config substitute as it might be not desired
   for particular application, while `\Illuminatech\Config\PersistentRepository` usage is not limited with this task.
 
+You may also manage persistent configuration per particular application entity. For example: imagine we need to allow
+application user to customize appearance of his profile page, like changing color schema or enable/disable sidebar and so on.
+Such settings can be managed by `\Illuminatech\Config\PersistentRepository` bound to the user Eloquent model. Such model class
+may look like following:
 
-## Configuration items specification <span id="configuration-items-specification"></span>
+```php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Config\Repository;
+use Illuminatech\Config\StorageDb;
+use Illuminate\Database\Eloquent\Model;
+use Illuminatech\Config\PersistentRepository;
+
+class User extends Model
+{
+    /**
+     * @var \Illuminatech\Config\PersistentRepository configuration repository specific to this model.
+     */
+    private $config;
+
+    /**
+     * Returns configuration associated with this particular model.
+     *
+     * @return \Illuminatech\Config\PersistentRepository config repository.
+     */
+    public function getConfig(): PersistentRepository
+    {
+        if ($this->config === null) {
+            if (empty($this->id)) {
+                throw new \InvalidArgumentException('Unable to get config for model without ID.');
+            }
+    
+            $repository = new Repository($this->defaultConfigData());
+    
+            $storage = (new StorageDb($this->getConnection()))
+                ->setFilter(['user_id' => $this->id]); // ensure configuration varies per each model
+    
+            $this->config = (new PersistentRepository($repository, $storage))
+                ->setItems($this->persistentConfigItems());
+        }
+    
+        return $this->config;
+    }
+    
+    /**
+     * Defines default configuration for the model instance.
+     *
+     * @return array config.
+     */
+    private function defaultConfigData()
+    {
+        return [
+            'sidebar' => [
+                'enabled' => true,
+            ],
+            'color' => [
+                'primary' => '#4099de',
+                'sidebar' => '#b3c1d1',
+            ],
+        ];
+    }
+    
+    /**
+     * Defines the config items, which should be manageable from admin panel and stored in the database.
+     *
+     * @return array config items.
+     */
+    private function persistentConfigItems(): array
+    {
+        return [
+            'sidebar.enabled' => [
+                'label' => 'Sidebar enabled',
+                'rules' => ['sometimes', 'required', 'boolean'],
+            ],
+            'color.primary' => [
+                'label' => 'Primary color',
+                'rules' => ['sometimes', 'required', 'string'],
+            ],
+            'color.sidebar' => [
+                'label' => 'Sidebar color',
+                'rules' => ['sometimes', 'required', 'string'],
+            ],
+        ];
+    }
+}
+```
+
+It will allow you to operate persistent configuration per each user record separately, so profile page composition may
+look like following:
+
+```blade
+@php
+/* @var $user App\Models\User */ 
+@endphp
+@extends('layouts.main')
+
+@section('content')
+@if ($user->getConfig()->get('sidebar.enabled'))
+    @include('includes.sidebar', ['color' => $user->getConfig()->get('color.sidebar')])
+@endif
+<div style="background-color:{{ $user->getConfig()->get('color.primary') }};">
+    ...
+</div>
+@endsection
+```
+
+### Configuration items specification <span id="configuration-items-specification"></span>
 
 Config parts, which should be saved in the persistent storage are defined by `\Illuminatech\Config\PersistentRepository::setItems()`,
 which accepts a list of `\Illuminatech\Config\Item` or configuration array for it.
@@ -169,7 +276,7 @@ $persistentConfigRepository = (new PersistentRepository(...))
 ```
 
 
-## Configuration storage <span id="configuration-storage"></span>
+### Configuration storage <span id="configuration-storage"></span>
 
 Declared configuration items may be saved into persistent storage and then retrieved from it.
 The actual item storage can be any class matching `\Illuminatech\Config\StorageContract` interface.
@@ -184,7 +291,7 @@ Following storages are available within this extension:
 Please refer to the particular storage class for more details.
 
 
-## Saving and restoring data <span id="saving-and-restoring-data"></span>
+### Saving and restoring data <span id="saving-and-restoring-data"></span>
 
 `\Illuminatech\Config\PersistentRepository` will automatically retrieve config item values from persistent storage on the
 first attempt to get config value from it.
@@ -296,7 +403,7 @@ echo $persistentConfigRepository->get('some.config'); // outputs 'original value
 You can also use `resetValue()` method to reset particular config key only.
 
 
-## Caching <span id="caching"></span>
+### Caching <span id="caching"></span>
 
 You can use [PSR-16](https://www.php-fig.org/psr/psr-16/) compatible cache storage to improve performance of the config item
 retrieval from persistent storage. For example:
@@ -324,7 +431,7 @@ $persistentConfigRepository = (new PersistentRepository($sourceConfigRepository,
 ```
 
 
-## Validation <span id="validation"></span>
+### Validation <span id="validation"></span>
 
 Each configuration item comes with validation rules, which matches `['sometimes' ,'required']` by default. You can easily
 create a validation for the user input before config saving, using these rules, or use `\Illuminatech\Config\PersistentRepository::validate()`.
@@ -347,7 +454,7 @@ By default Laravel considers dots in validation rules as array nested keys separ
 by '->' string or manually define `\Illuminatech\Config\Item::$id` in the way it does not contain a dot.
 
 
-## Creating configuration web interface <span id="creating-configuration-web-interface"></span>
+### Creating configuration web interface <span id="creating-configuration-web-interface"></span>
 
 One of the most common use case for this extension is creating a web interface, which allows control of application
 configuration in runtime.
@@ -407,10 +514,10 @@ You can operate `\Illuminatech\Config\Item` interface during HTML form input com
 ...
 <form ...>
 ...
-@foreach($items as $item)
-    <label>{{$item->label}}</label>
-    <input type="text" name="{{$item->id}}" value="{{$item->getValue()}}">
-    <p>{{$item->hint}}</p>
+@foreach ($items as $item)
+    <label>{{ $item->label }}</label>
+    <input type="text" name="{{ $item->id }}" value="{{ $item->getValue() }}">
+    <p>{{ $item->hint }}</p>
 @endforeach
 ...
 </form>
@@ -447,7 +554,7 @@ $persistentConfigRepository = (new PersistentRepository(...))
   format or via native (not spoofed) 'PUT' request.
 
 
-## Typecast <span id="typecast"></span>
+### Typecast <span id="typecast"></span>
 
 You may operate complex type values like arrays as a persistent ones. In order to do so, you should specify config item
 typecasting via `\Illuminatech\Config\Item::$cast`. For example:
@@ -482,7 +589,7 @@ var_dump($persistentConfigRepository->get('some.array') === ['five', 'six']); //
 ```
 
 
-## Encryption <span id="encryption"></span>
+### Encryption <span id="encryption"></span>
 
 In case you are planning to operate sensitive data like passwords, API keys and so on, you may want to store them as an
 encrypted strings rather than the plain ones. This can be achieved enabling `\Illuminatech\Config\Item::$encrypt`.
@@ -511,7 +618,7 @@ $persistentConfigRepository = (new PersistentRepository($sourceConfigRepository,
 Note that data encryption will impact the config repository performance.
 
 
-## Garbage collection <span id="garbage-collection"></span>
+### Garbage collection <span id="garbage-collection"></span>
 
 As your project evolves new configuration items may appear as well as some becomes redundant.
 `\Illuminatech\Config\PersistentRepository` automatically ignores any value in persistent storage in case it has no
