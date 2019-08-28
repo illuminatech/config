@@ -1,8 +1,8 @@
 Laravel Persistent Configuration Repository
 ===========================================
 
-1.0.4 Under Development
------------------------
+1.0.4, August 28, 2019
+----------------------
 
 - Bug #7: Fixed `PersistentRepository::synchronize()` does not save values for the items with custom `id` (klimov-paul)
 
