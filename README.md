@@ -41,7 +41,7 @@ Usage
 
 This extension allows reconfiguration of already created config repository using data from the external storage like relational database.
 It provides special config repository class `\Illuminatech\Config\PersistentRepository`, which wraps any given config repository,
-adding a layer for saving and restoring of data from persistent storage.
+adding a layer for saving and restoring of data from the persistent storage.
 
 ```php
 <?php
@@ -190,7 +190,7 @@ class User extends Model
     }
     
     /**
-     * Defines the config items, which should be manageable from admin panel and stored in the database.
+     * Defines the config items, which should be manageable from web interface and stored in the database.
      *
      * @return array config items.
      */
