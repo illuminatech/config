@@ -88,12 +88,16 @@ class PersistentRepositoryTest extends TestCase
     {
         $this->persistentRepository->setItems([
             'test.name',
+            'custom.id' => [
+                'id' => 'custom_id',
+            ],
         ]);
 
         $this->persistentRepository->set('test.name', 'Test name');
+        $this->persistentRepository->set('custom.id', 'Test custom id');
         $this->persistentRepository->synchronize();
 
-        $this->assertEquals(['test.name' => 'Test name'], $this->storage->get());
+        $this->assertEquals(['test.name' => 'Test name', 'custom.id' => 'Test custom id'], $this->storage->get());
     }
 
     /**

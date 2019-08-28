@@ -233,7 +233,7 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
     {
         $values = [];
         foreach ($this->getItems() as $item) {
-            $values[$item->key] = $item->getValue();
+            $values[$item->id] = $item->getValue();
         }
 
         return $this->save($values);
