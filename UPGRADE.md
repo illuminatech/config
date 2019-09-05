@@ -11,7 +11,7 @@ for both A and B.
 Upgrade from 1.0.4
 ------------------
 
-* "illuminate/support" package requirements were raised to 6.0. Make sure your to upgrade your code accordingly.
+* "illuminate/support" package requirements were raised to 6.0. Make sure to upgrade your code accordingly.
 
 * "illuminate/database" package is no longer required by this extension, make sure you add it to your `composer.json`
   in case you use `StorageDb` or `StorageEloquent` storage.
