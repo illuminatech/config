@@ -11,8 +11,8 @@ Its usage in particular provides support for application runtime configuration, 
 
 For license information check the [LICENSE](LICENSE.md)-file.
 
-[![Latest Stable Version](https://poser.pugx.org/illuminatech/config/v/stable.png)](https://packagist.org/packages/illuminatech/config)
-[![Total Downloads](https://poser.pugx.org/illuminatech/config/downloads.png)](https://packagist.org/packages/illuminatech/config)
+[![Latest Stable Version](https://img.shields.io/packagist/v/illuminatech/config.svg)](https://packagist.org/packages/illuminatech/config)
+[![Total Downloads](https://img.shields.io/packagist/dt/illuminatech/config.svg)](https://packagist.org/packages/illuminatech/config)
 [![Build Status](https://travis-ci.org/illuminatech/config.svg?branch=master)](https://travis-ci.org/illuminatech/config)
 
 
