@@ -283,10 +283,10 @@ The actual item storage can be any class matching `\Illuminatech\Config\StorageC
 
 Following storages are available within this extension:
 
- - `\Illuminatech\Config\StorageDb` - stores configuration inside relational database;
- - `\Illuminatech\Config\StorageEloquent` - stores configuration using Eloquent models;
- - `\Illuminatech\Config\StoragePhp` - stores configuration in local PHP files;
- - `\Illuminatech\Config\StorageArray` - stores configuration in runtime memory;
+ - [\Illuminatech\Config\StorageDb](src/StorageDb.php) - stores configuration inside relational database;
+ - [\Illuminatech\Config\StorageEloquent](src/StorageEloquent.php) - stores configuration using Eloquent models;
+ - [\Illuminatech\Config\StoragePhp](src/StoragePhp.php) - stores configuration in local PHP files;
+ - [\Illuminatech\Config\StorageArray](src/StorageArray.php) - stores configuration in runtime memory;
 
 Please refer to the particular storage class for more details.
 
