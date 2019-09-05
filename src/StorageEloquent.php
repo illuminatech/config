@@ -52,6 +52,8 @@ use Illuminate\Database\Eloquent\Model;
  *     ->setFilter(['category_id' => 'global']);
  * ```
  *
+ * > Note: this storage requires "illuminate/database" package installed.
+ *
  * @see \Illuminate\Database\Eloquent\Model
  * @see \Illuminatech\Config\StorageDb
  *

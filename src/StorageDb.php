@@ -34,6 +34,8 @@ use Illuminate\Database\Connection;
  *     ->setFilter(['category_id' => 'global']);
  * ```
  *
+ * > Note: this storage requires "illuminate/database" package installed.
+ *
  * @see \Illuminatech\Config\StorageEloquent
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
