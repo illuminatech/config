@@ -8,8 +8,8 @@
 namespace Illuminatech\Config\Console;
 
 use Illuminate\Contracts\Console\Kernel;
-use Illuminatech\Config\PersistentRepository;
 use Illuminate\Foundation\Console\ConfigCacheCommand as BaseCommand;
+use Illuminatech\Config\PersistentRepository;
 
 /**
  * ConfigCacheCommand enhances standard Laravel's one bypassing config persistent storage.

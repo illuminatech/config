@@ -47,9 +47,9 @@ adding a layer for saving and restoring of data from the persistent storage.
 <?php
 
 use Illuminate\Config\Repository;
-use Illuminatech\Config\StorageDb;
 use Illuminate\Support\Facades\App;
 use Illuminatech\Config\PersistentRepository;
+use Illuminatech\Config\StorageDb;
 
 $sourceConfigRepository = new Repository([
     'foo' => [
@@ -89,10 +89,10 @@ applying configuration from database to the entire application. You can do so in
 
 namespace App\Providers;
 
-use Illuminatech\Config\StorageDb;
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Config\Repository;
+use Illuminate\Support\ServiceProvider;
 use Illuminatech\Config\PersistentRepository;
+use Illuminatech\Config\StorageDb;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -136,9 +136,9 @@ may look like following:
 namespace App\Models;
 
 use Illuminate\Config\Repository;
-use Illuminatech\Config\StorageDb;
 use Illuminate\Database\Eloquent\Model;
 use Illuminatech\Config\PersistentRepository;
+use Illuminatech\Config\StorageDb;
 
 class User extends Model
 {
@@ -468,8 +468,8 @@ The web controller for configuration management may look like following:
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Contracts\Container\Container;
+use Illuminate\Http\Request;
 
 class ConfigController extends Controller
 {
@@ -630,8 +630,8 @@ using `gc()` method:
 <?php
 
 use Illuminate\Config\Repository;
-use Illuminatech\Config\StorageDb;
 use Illuminatech\Config\PersistentRepository;
+use Illuminatech\Config\StorageDb;
 
 $sourceConfigRepository = new Repository([
     'some' => [

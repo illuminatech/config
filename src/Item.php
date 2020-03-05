@@ -7,11 +7,11 @@
 
 namespace Illuminatech\Config;
 
-use RuntimeException;
-use InvalidArgumentException;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Support\Facades\Crypt;
+use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * Item represents a single configuration item.

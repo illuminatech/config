@@ -2,8 +2,8 @@
 
 namespace Illuminatech\Config\Test;
 
-use Illuminatech\Config\StorageDb;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminatech\Config\StorageDb;
 
 class StorageDbTest extends TestCase
 {

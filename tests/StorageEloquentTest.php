@@ -2,8 +2,8 @@
 
 namespace Illuminatech\Config\Test;
 
-use Illuminatech\Config\StorageEloquent;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminatech\Config\StorageEloquent;
 
 class StorageEloquentTest extends TestCase
 {

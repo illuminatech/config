@@ -2,16 +2,16 @@
 
 namespace Illuminatech\Config\Test;
 
-use Psr\Log\NullLogger;
-use Illuminatech\Config\Item;
+use Illuminate\Cache\Repository as CacheRepository;
 use Illuminate\Cache\ArrayStore;
+use Illuminate\Config\Repository as ConfigRepository;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
+use Illuminatech\Config\Item;
+use Illuminatech\Config\PersistentRepository;
 use Illuminatech\Config\StorageArray;
 use Illuminatech\Config\StorageContact;
-use Illuminatech\Config\PersistentRepository;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Cache\Repository as CacheRepository;
-use Illuminate\Config\Repository as ConfigRepository;
+use Psr\Log\NullLogger;
 
 class PersistentRepositoryTest extends TestCase
 {

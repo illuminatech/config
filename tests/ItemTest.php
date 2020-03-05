@@ -2,8 +2,8 @@
 
 namespace Illuminatech\Config\Test;
 
-use Illuminatech\Config\Item;
 use Illuminate\Config\Repository;
+use Illuminatech\Config\Item;
 
 class ItemTest extends TestCase
 {

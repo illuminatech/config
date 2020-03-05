@@ -2,16 +2,16 @@
 
 namespace Illuminatech\Config\Test;
 
-use Illuminate\Support\Str;
-use Illuminate\Validation\Factory;
 use Illuminate\Container\Container;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Capsule\Manager;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Facade;
+use Illuminate\Support\Str;
 use Illuminate\Translation\FileLoader;
 use Illuminate\Translation\Translator;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Capsule\Manager;
+use Illuminate\Validation\Factory;
 
 /**
  * Base class for the test cases.
