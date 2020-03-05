@@ -7,21 +7,51 @@
 
 namespace Illuminatech\Config\Providers;
 
-use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\ServiceProvider;
 use Illuminatech\Config\Console\ConfigCacheCommand;
 use Illuminatech\Config\PersistentRepository;
 use Illuminatech\Config\StorageContact;
 
 /**
- * AbstractPersistentConfigProvider is scaffold for the application-wide persistent configuration setup.
+ * AbstractPersistentConfigServiceProvider is scaffold for the application-wide persistent configuration setup.
  *
  * You may extend this class, overriding abstract methods, to create persistent configuration for the particular application.
+ *
+ * For example:
+ *
+ * ```php
+ * namespace App\Providers;
+ *
+ * use Illuminatech\Config\Providers\AbstractPersistentConfigServiceProvider;
+ * use Illuminatech\Config\StorageContact;
+ * use Illuminatech\Config\StorageDb;
+ *
+ * class PersistentConfigServiceProvider extends AbstractPersistentConfigServiceProvider
+ * {
+ *     protected function storage(): StorageContact
+ *     {
+ *         return (new StorageDb($this->app->make('db.connection')));
+ *     }
+ *
+ *     protected function items(): array
+ *     {
+ *         return [
+ *             'mail.contact.address' => [
+ *                 'label' => __('Email address receiving contact messages'),
+ *                 'rules' => ['sometimes', 'required', 'email'],
+ *             ],
+ *             // ...
+ *         ];
+ *     }
+ * }
+ * ```
+ *
+ * Do not forget to register your particular persistent config service provider in "providers" section at "config/app.php".
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.1.1
  */
-abstract class AbstractPersistentConfigProvider extends ServiceProvider
+abstract class AbstractPersistentConfigServiceProvider extends ServiceProvider
 {
     /**
      * @var string key used to store persistent config values into the cache.
@@ -47,9 +77,19 @@ abstract class AbstractPersistentConfigProvider extends ServiceProvider
                 ->setCacheTtl($this->cacheTtl)
                 ->setItems($this->items());
         });
+    }
 
-        $this->app->singleton('command.config.cache', function (Container $app) {
-            return new ConfigCacheCommand($app->make('files'));
+    /**
+     * {@inheritdoc}
+     */
+    public function register(): void
+    {
+        if (! $this->app->runningInConsole()) {
+            return;
+        }
+
+        $this->app->extend('command.config.cache', function () {
+            return new ConfigCacheCommand($this->app->make('files'));
         });
     }
 

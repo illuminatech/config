@@ -4,7 +4,7 @@ Laravel Persistent Configuration Repository
 1.1.1 Under Development
 -----------------------
 
-- Enh: Created `AbstractPersistentConfigProvider` providing a scaffold for the application-wide persistent configuration setup (klimov-paul)
+- Enh: Created `AbstractPersistentConfigServiceProvider` providing a scaffold for the application-wide persistent configuration setup (klimov-paul)
 - Enh #10: Added support for "illuminate/support" 7.0 (drbyte, klimov-paul)
 
 
