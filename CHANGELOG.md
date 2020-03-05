@@ -4,6 +4,7 @@ Laravel Persistent Configuration Repository
 1.1.1 Under Development
 -----------------------
 
+- Bug: Fixed `PersistentRepository::save()` looses values on partial save with cache enabled (klimov-paul)
 - Enh: Created `AbstractPersistentConfigServiceProvider` providing a scaffold for the application-wide persistent configuration setup (klimov-paul)
 - Enh #10: Added support for "illuminate/support" 7.0 (drbyte, klimov-paul)
 

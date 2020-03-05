@@ -214,7 +214,8 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
         /* @var $items Item[] */
         $items = $this->getItems()->keyBy('id');
 
-        $storeValues = [];
+        $storeValues = $this->storage->get();
+
         foreach ($values as $id => $value) {
             if (! isset($items[$id])) {
                 continue;

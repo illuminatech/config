@@ -271,6 +271,47 @@ class PersistentRepositoryTest extends TestCase
     }
 
     /**
+     * @depends testCache
+     */
+    public function testPartialSaveWithCache()
+    {
+        $items = [
+            'test.name',
+            'test.title',
+        ];
+
+        $cache = new CacheRepository(new ArrayStore());
+
+        $this->repository->set('test', [
+            'name' => 'name-0',
+            'title' => 'title-0',
+        ]);
+
+        $this->persistentRepository->setItems($items);
+        $this->persistentRepository->setCache($cache);
+
+        $freshPersistentRepository = (new PersistentRepository(clone $this->repository, $this->storage))
+            ->setItems($items)
+            ->setCache($cache);
+
+        $this->persistentRepository->save([
+            'test.name' => 'name-1',
+            'test.title' => 'title-1',
+        ]);
+
+        $cache->flush();
+
+        $this->persistentRepository->save([
+            'test.title' => 'title-2',
+        ]);
+
+        $freshPersistentRepository->restore();
+
+        $this->assertSame('title-2', $freshPersistentRepository->get('test.title'));
+        $this->assertSame('name-1', $freshPersistentRepository->get('test.name'));
+    }
+
+    /**
      * @depends testRestore
      */
     public function testTypeCast()
