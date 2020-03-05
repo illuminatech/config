@@ -1,8 +1,8 @@
 Laravel Persistent Configuration Repository
 ===========================================
 
-1.1.1 Under Development
------------------------
+1.1.1, March 5, 2020
+--------------------
 
 - Bug: Fixed `PersistentRepository::save()` looses values on partial save with cache enabled (klimov-paul)
 - Enh: Created `AbstractPersistentConfigServiceProvider` providing a scaffold for the application-wide persistent configuration setup (klimov-paul)
