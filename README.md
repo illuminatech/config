@@ -122,8 +122,54 @@ Then anytime you access 'config' service in your application via `config()` func
 or via service container you will interact with `\Illuminatech\Config\PersistentRepository` instance getting values modified
 by database data.
 
-> Note: this extension does not provide built in service provider for application config substitute as it might be not desired
-  for particular application, while `\Illuminatech\Config\PersistentRepository` usage is not limited with this task.
+Note: this extension does not provide built in service provider for application config substitute as it might be not desired
+for particular application, while `\Illuminatech\Config\PersistentRepository` usage is not limited with this task.
+However, you can use `\Illuminatech\Config\Providers\AbstractPersistentConfigServiceProvider` class as a scaffold for such service provider.
+For example:
+
+```php
+<?php
+
+namespace App\Providers;
+
+use Illuminatech\Config\Providers\AbstractPersistentConfigServiceProvider;
+use Illuminatech\Config\StorageContact;
+use Illuminatech\Config\StorageDb;
+
+class PersistentConfigServiceProvider extends AbstractPersistentConfigServiceProvider
+{
+    protected function storage(): StorageContact
+    {
+        return (new StorageDb($this->app->make('db.connection')));
+    }
+
+    protected function items(): array
+    {
+        return [
+            'mail.contact.address' => [
+                'label' => __('Email address receiving contact messages'),
+                'rules' => ['sometimes', 'required', 'email'],
+            ],
+            // ...
+        ];
+    }
+}
+```
+
+Do not forget to register your particular persistent config service provider in "providers" section at "config/app.php":
+
+```php
+<?php
+
+return [
+    // ...
+    'providers' => [
+        // ...
+        App\Providers\PersistentConfigServiceProvider::class,
+    ],
+    // ...
+];
+```
 
 You may also manage persistent configuration per particular application entity. For example: imagine we need to allow
 application user to customize appearance of his profile page, like changing color schema or enable/disable sidebar and so on.
