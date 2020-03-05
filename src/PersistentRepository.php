@@ -112,7 +112,7 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
     /**
      * Constructor.
      *
-     * @param  RepositoryContract  $configRepository config repository to be decorated.
+     * @param  \Illuminate\Contracts\Config\Repository  $configRepository config repository to be decorated.
      * @param  StorageContact  $storage config values persistent storage.
      * @param  \Psr\SimpleCache\CacheInterface  $cache cache repository to be used.
      */
@@ -190,6 +190,17 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
         $this->itemKeys = null;
 
         return $this;
+    }
+
+    /**
+     * Returns wrapped config repository.
+     * @since 1.1.1
+     *
+     * @return \Illuminate\Contracts\Config\Repository wrapped config repository.
+     */
+    public function getRepository(): RepositoryContract
+    {
+        return $this->repository;
     }
 
     /**

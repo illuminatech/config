@@ -61,6 +61,11 @@ class PersistentRepositoryTest extends TestCase
         $this->assertSame($this->repository, $items->last()->getRepository());
     }
 
+    public function testGetRepository()
+    {
+        $this->assertSame($this->repository, $this->persistentRepository->getRepository());
+    }
+
     /**
      * @depends testSetupItems
      */
