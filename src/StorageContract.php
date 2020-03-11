@@ -8,7 +8,7 @@
 namespace Illuminatech\Config;
 
 /**
- * StorageContact defines config persistent storage interface.
+ * StorageContract defines config persistent storage interface.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0

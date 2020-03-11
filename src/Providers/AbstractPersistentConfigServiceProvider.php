@@ -23,12 +23,12 @@ use Illuminatech\Config\StorageContract;
  * namespace App\Providers;
  *
  * use Illuminatech\Config\Providers\AbstractPersistentConfigServiceProvider;
- * use Illuminatech\Config\StorageContact;
+ * use Illuminatech\Config\StorageContract;
  * use Illuminatech\Config\StorageDb;
  *
  * class PersistentConfigServiceProvider extends AbstractPersistentConfigServiceProvider
  * {
- *     protected function storage(): StorageContact
+ *     protected function storage(): StorageContract
  *     {
  *         return (new StorageDb($this->app->make('db.connection')));
  *     }
