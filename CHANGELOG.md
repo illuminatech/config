@@ -1,6 +1,12 @@
 Laravel Persistent Configuration Repository
 ===========================================
 
+1.2.0 Under Development
+-----------------------
+
+- Enh #12: Fixed typo in interface name from `StorageContact` to `StorageContract` (klimov-paul)
+
+
 1.1.1, March 5, 2020
 --------------------
 

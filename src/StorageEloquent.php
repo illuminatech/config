@@ -60,7 +60,7 @@ use Illuminate\Database\Eloquent\Model;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0
  */
-class StorageEloquent implements StorageContact
+class StorageEloquent implements StorageContract
 {
     /**
      * @var string|\Illuminate\Database\Eloquent\Model name of the Eloquent model class, which should store the config values.

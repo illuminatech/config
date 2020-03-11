@@ -15,7 +15,7 @@ namespace Illuminatech\Config;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0
  */
-class StorageArray implements StorageContact
+class StorageArray implements StorageContract
 {
     /**
      * @var array stored data.

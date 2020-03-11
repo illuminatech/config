@@ -10,7 +10,7 @@ namespace Illuminatech\Config\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminatech\Config\Console\ConfigCacheCommand;
 use Illuminatech\Config\PersistentRepository;
-use Illuminatech\Config\StorageContact;
+use Illuminatech\Config\StorageContract;
 
 /**
  * AbstractPersistentConfigServiceProvider is scaffold for the application-wide persistent configuration setup.
@@ -96,9 +96,9 @@ abstract class AbstractPersistentConfigServiceProvider extends ServiceProvider
     /**
      * Defines the storage for the persistent config.
      *
-     * @return \Illuminatech\Config\StorageContact
+     * @return \Illuminatech\Config\StorageContract
      */
-    abstract protected function storage(): StorageContact;
+    abstract protected function storage(): StorageContract;
 
     /**
      * Defines configuration items, which values should be placed in persistent storage.

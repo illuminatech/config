@@ -13,7 +13,7 @@ namespace Illuminatech\Config;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0
  */
-interface StorageContact
+interface StorageContract
 {
     /**
      * Saves given values.

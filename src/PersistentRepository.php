@@ -85,7 +85,7 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
     private $repository;
 
     /**
-     * @var \Illuminatech\Config\StorageContact config persistent storage.
+     * @var \Illuminatech\Config\StorageContract config persistent storage.
      */
     private $storage;
 
@@ -113,10 +113,10 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
      * Constructor.
      *
      * @param  \Illuminate\Contracts\Config\Repository  $configRepository config repository to be decorated.
-     * @param  StorageContact  $storage config values persistent storage.
+     * @param  StorageContract  $storage config values persistent storage.
      * @param  \Psr\SimpleCache\CacheInterface  $cache cache repository to be used.
      */
-    public function __construct(RepositoryContract $configRepository, StorageContact $storage, CacheContract $cache = null)
+    public function __construct(RepositoryContract $configRepository, StorageContract $storage, CacheContract $cache = null)
     {
         $this->repository = $configRepository;
         $this->storage = $storage;

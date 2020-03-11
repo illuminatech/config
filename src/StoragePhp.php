@@ -27,7 +27,7 @@ use Illuminate\Support\Facades\File;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0
  */
-class StoragePhp implements StorageContact
+class StoragePhp implements StorageContract
 {
     /**
      * @var string name of the file, which should be used to store values.

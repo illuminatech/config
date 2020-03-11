@@ -41,7 +41,7 @@ use Illuminate\Database\Connection;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0
  */
-class StorageDb implements StorageContact
+class StorageDb implements StorageContract
 {
     /**
      * @var string name of the table, which should store values.

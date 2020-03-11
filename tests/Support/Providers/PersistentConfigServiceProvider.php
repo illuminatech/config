@@ -4,14 +4,14 @@ namespace Illuminatech\Config\Test\Support\Providers;
 
 use Illuminatech\Config\Providers\AbstractPersistentConfigServiceProvider;
 use Illuminatech\Config\StorageArray;
-use Illuminatech\Config\StorageContact;
+use Illuminatech\Config\StorageContract;
 
 class PersistentConfigServiceProvider extends AbstractPersistentConfigServiceProvider
 {
     /**
      * {@inheritdoc}
      */
-    protected function storage(): StorageContact
+    protected function storage(): StorageContract
     {
         return new StorageArray();
     }

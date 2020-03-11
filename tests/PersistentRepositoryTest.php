@@ -10,7 +10,7 @@ use Illuminate\Validation\ValidationException;
 use Illuminatech\Config\Item;
 use Illuminatech\Config\PersistentRepository;
 use Illuminatech\Config\StorageArray;
-use Illuminatech\Config\StorageContact;
+use Illuminatech\Config\StorageContract;
 use Psr\Log\NullLogger;
 
 class PersistentRepositoryTest extends TestCase
@@ -454,7 +454,7 @@ class PersistentRepositoryTest extends TestCase
      */
     public function testLazyRestore($key, bool $allowRestore)
     {
-        $storage = $this->getMockBuilder(StorageContact::class)
+        $storage = $this->getMockBuilder(StorageContract::class)
             ->getMock();
 
         $persistentRepository = (new PersistentRepository($this->repository, $storage))

@@ -8,6 +8,13 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to following the instructions
 for both A and B.
 
+Upgrade from 1.1.1
+------------------
+
+* Interface `Illuminatech\Config\StorageContact` has been renamed to `Illuminatech\Config\StorageContract`.
+  Check references to this interface in your code and fix them accordingly.
+
+
 Upgrade from 1.0.4
 ------------------
 
