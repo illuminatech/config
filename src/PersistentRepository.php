@@ -211,7 +211,7 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
      */
     public function save(array $values): self
     {
-        /* @var $items Item[] */
+        /** @var $items Item[] */
         $items = $this->getItems()->keyBy('id');
 
         $storeValues = $this->storage->get();
@@ -259,7 +259,7 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
      */
     public function restore(): self
     {
-        /* @var $items Collection|Item[] */
+        /** @var $items Collection|Item[] */
         $items = $this->getItems()->keyBy('key');
 
         $values = $this->getCached();

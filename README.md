@@ -599,6 +599,9 @@ $persistentConfigRepository = (new PersistentRepository(...))
 > Tip: you will not face this problem in case you submit configuration item values via REST API interface using JSON
   format or via native (not spoofed) 'PUT' request.
 
+In case you are using [Laravel Nova](https://nova.laravel.com/) for your application admin panel, you can easily create an application
+configuration setup interface with [illuminatech/nova-config](https://github.com/illuminatech/nova-config) extension.
+
 
 ### Typecast <span id="typecast"></span>
 

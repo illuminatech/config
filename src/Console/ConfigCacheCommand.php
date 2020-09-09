@@ -29,7 +29,7 @@ class ConfigCacheCommand extends BaseCommand
      */
     protected function getFreshConfiguration(): array
     {
-        /* @var $app \Illuminate\Contracts\Foundation\Application */
+        /** @var $app \Illuminate\Contracts\Foundation\Application */
         $app = require $this->laravel->bootstrapPath().'/app.php';
 
         $app->useStoragePath($this->laravel->storagePath());
