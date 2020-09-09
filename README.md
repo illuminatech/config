@@ -496,8 +496,8 @@ $validatedData = $config->validate($request->all()); // throws \Illuminate\Valid
 You can also use `\Illuminatech\Config\PersistentRepository::makeValidator()` method to create a validator instance for manual processing.
 
 **Heads up!** Watch for usage dot symbols ('.') inside the input in case you do not use `\Illuminatech\Config\PersistentRepository::validate()` method.
-By default Laravel considers dots in validation rules as array nested keys separator. You should either replace them
-by '->' string or manually define `\Illuminatech\Config\Item::$id` in the way it does not contain a dot.
+By default Laravel considers dots in validation rules as array nested keys separator. You should either prefix them
+with backslash ('\') or manually define `\Illuminatech\Config\Item::$id` in the way it does not contain a dot.
 
 
 ### Creating configuration web interface <span id="creating-configuration-web-interface"></span>

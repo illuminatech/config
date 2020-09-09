@@ -1,6 +1,13 @@
 Laravel Persistent Configuration Repository
 ===========================================
 
+1.3.0 Under Development
+-----------------------
+
+- Bug #13: Fixed validation for the item ID containing dot ('.') (klimov-paul)
+- Enh: Added support for "illuminate/support" 8.0 (klimov-paul)
+
+
 1.2.0, March 11, 2020
 ---------------------
 

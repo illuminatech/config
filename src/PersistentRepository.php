@@ -362,7 +362,7 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
     {
         $rules = [];
         foreach ($this->getItems() as $item) {
-            $inputName = str_replace('.', '->', $item->id);
+            $inputName = str_replace('.', '\.', $item->id);
             $rules[$inputName] = $item->rules;
         }
 
@@ -386,11 +386,10 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
         if ($validator->fails()) {
             $errors = [];
             foreach ($validator->errors()->getMessages() as $key => $messages) {
-                $itemId = str_replace('->', '.', $key);
-                $errors[$itemId] = [];
+                $errors[$key] = [];
                 foreach ($messages as $message) {
-                    $itemLabel = $items[$itemId]->label;
-                    $errors[$itemId][] = str_replace(
+                    $itemLabel = $items[$key]->label;
+                    $errors[$key][] = str_replace(
                         [
                             $key,
                             Str::ucfirst($key),
@@ -409,13 +408,7 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
             throw ValidationException::withMessages($errors);
         }
 
-        $itemValues = [];
-        foreach ($validator->validated() as $key => $value) {
-            $itemId = str_replace('->', '.', $key);
-            $itemValues[$itemId] = $value;
-        }
-
-        return $itemValues;
+        return $validator->validated();
     }
 
     /**
