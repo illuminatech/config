@@ -13,7 +13,7 @@ For license information check the [LICENSE](LICENSE.md)-file.
 
 [![Latest Stable Version](https://img.shields.io/packagist/v/illuminatech/config.svg)](https://packagist.org/packages/illuminatech/config)
 [![Total Downloads](https://img.shields.io/packagist/dt/illuminatech/config.svg)](https://packagist.org/packages/illuminatech/config)
-[![Build Status](https://travis-ci.org/illuminatech/config.svg?branch=master)](https://travis-ci.org/illuminatech/config)
+[![Build Status](https://github.com/illuminatech/config/workflows/build/badge.svg)](https://github.com/illuminatech/config/actions)
 
 
 Installation
