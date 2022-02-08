@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\File;
  * use Illuminatech\Config\StoragePhp;
  * use Illuminate\Support\Facades\App;
  *
- * $storage = new StoragePhp(App::make('path.storage').'/configs/global.php');
+ * $storage = new StoragePhp(App::make('path.storage') . '/configs/global.php');
  * ```
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
@@ -37,7 +37,7 @@ class StoragePhp implements StorageContract
     /**
      * Constructor.
      *
-     * @param  string  $fileName name of the file, which should be used to store values.
+     * @param string $fileName name of the file, which should be used to store values.
      */
     public function __construct(string $fileName)
     {
@@ -121,7 +121,7 @@ class StoragePhp implements StorageContract
     /**
      * Invalidates precompiled script cache (such as OPCache or APC) for the given file.
      *
-     * @param  string  $fileName file name.
+     * @param string $fileName file name.
      */
     protected function invalidateScriptCache($fileName)
     {

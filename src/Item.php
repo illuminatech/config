@@ -94,12 +94,12 @@ class Item implements Arrayable
     /**
      * Constructor.
      *
-     * @param  array  $config this item properties to be set in format: [name => value].
+     * @param array $config this item properties to be set in format: [name => value].
      */
     public function __construct(array $config)
     {
         if (! isset($config['key'])) {
-            throw new InvalidArgumentException('"'.get_class($this).'::$key" must be specified.');
+            throw new InvalidArgumentException('"' . get_class($this) . '::$key" must be specified.');
         }
 
         $this->key = $config['key'];
@@ -115,7 +115,7 @@ class Item implements Arrayable
     /**
      * Binds this item to the given config repository.
      *
-     * @param  \Illuminate\Contracts\Config\Repository  $configRepository config repository to store this item value.
+     * @param \Illuminate\Contracts\Config\Repository $configRepository config repository to store this item value.
      * @return static self reference.
      */
     public function setRepository(Repository $configRepository): self
@@ -141,7 +141,7 @@ class Item implements Arrayable
     /**
      * Returns value for this item from related config repository.
      *
-     * @param  mixed|null  $default
+     * @param mixed|null $default
      * @return mixed
      */
     public function getValue($default = null)
@@ -152,7 +152,7 @@ class Item implements Arrayable
     /**
      * Sets the value for this item inside related config repository.
      *
-     * @param  mixed  $value
+     * @param mixed $value
      * @return static self reference.
      */
     public function setValue($value): self
@@ -169,7 +169,7 @@ class Item implements Arrayable
     /**
      * Prepares value for the saving into persistent storage, performing typecast if necessary.
      *
-     * @param  mixed  $value raw config value.
+     * @param mixed $value raw config value.
      * @return mixed value to be saved in persistent storage.
      */
     public function saveValue($value)
@@ -188,7 +188,7 @@ class Item implements Arrayable
     /**
      * Restores value from the raw one extracted from persistent storage, performing typecast if necessary.
      *
-     * @param  mixed  $value value from persistent storage.
+     * @param mixed $value value from persistent storage.
      * @return mixed actual config value.
      */
     public function restoreValue($value)
@@ -222,7 +222,7 @@ class Item implements Arrayable
     /**
      * Prepares raw value for the persistent storage according to {@see $cast} value.
      *
-     * @param  mixed  $value raw value.
+     * @param mixed $value raw value.
      * @return mixed serialized value.
      */
     protected function serializeValue($value)
@@ -241,7 +241,7 @@ class Item implements Arrayable
     /**
      * Typecasts raw value from persistent storage to the actual one according to {@see $cast} value.
      *
-     * @param  string  $value value from persistent storage.
+     * @param string $value value from persistent storage.
      * @return mixed actual value after typecast.
      */
     protected function castValue($value)
@@ -280,7 +280,7 @@ class Item implements Arrayable
     /**
      * Encrypts value for the storage.
      *
-     * @param  string|mixed  $value raw value.
+     * @param string|mixed $value raw value.
      * @return string encrypted value.
      */
     protected function encrypt($value)
@@ -291,7 +291,7 @@ class Item implements Arrayable
     /**
      * Decrypts value from the storage.
      *
-     * @param  string|mixed  $value encrypted value.
+     * @param string|mixed $value encrypted value.
      * @return string decrypted value.
      */
     protected function decrypt($value)

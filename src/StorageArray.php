@@ -25,7 +25,7 @@ class StorageArray implements StorageContract
     /**
      * Constructor.
      *
-     * @param  array  $data data to be stored.
+     * @param array $data data to be stored.
      */
     public function __construct(array $data = [])
     {

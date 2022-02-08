@@ -85,7 +85,8 @@ class StorageEloquent implements StorageContract
 
     /**
      * Constructor.
-     * @param  string|null  $model name of the Eloquent model class, which should store the config values.
+     *
+     * @param string|null $model name of the Eloquent model class, which should store the config values.
      */
     public function __construct(string $model = null)
     {
@@ -164,7 +165,7 @@ class StorageEloquent implements StorageContract
     // Self Configure :
 
     /**
-     * @param  string  $keyAttribute name of the model attribute, which should store config item key.
+     * @param string $keyAttribute name of the model attribute, which should store config item key.
      * @return static self reference.
      */
     public function setKeyAttribute(string $keyAttribute): self
@@ -175,7 +176,7 @@ class StorageEloquent implements StorageContract
     }
 
     /**
-     * @param  string  $valueAttribute name of the model attribute, which should store config item value.
+     * @param string $valueAttribute name of the model attribute, which should store config item value.
      * @return static self reference.
      */
     public function setValueAttribute(string $valueAttribute): self
@@ -188,7 +189,7 @@ class StorageEloquent implements StorageContract
     /**
      * @see \Illuminate\Database\Eloquent\Builder::where()
      *
-     * @param  array  $filter filter condition for records query restriction.
+     * @param array $filter filter condition for records query restriction.
      * @return static self reference.
      */
     public function setFilter($filter): self

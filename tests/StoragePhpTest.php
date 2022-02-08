@@ -38,7 +38,7 @@ class StoragePhpTest extends TestCase
      */
     protected function getTestFileName()
     {
-        return __DIR__.DIRECTORY_SEPARATOR.'storage'.DIRECTORY_SEPARATOR.'test_config_' . getmypid() . '.php';
+        return __DIR__ . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'test_config_' . getmypid() . '.php';
     }
 
     public function testSave()

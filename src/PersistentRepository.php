@@ -112,9 +112,9 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
     /**
      * Constructor.
      *
-     * @param  \Illuminate\Contracts\Config\Repository  $configRepository config repository to be decorated.
-     * @param  StorageContract  $storage config values persistent storage.
-     * @param  \Psr\SimpleCache\CacheInterface  $cache cache repository to be used.
+     * @param \Illuminate\Contracts\Config\Repository $configRepository config repository to be decorated.
+     * @param StorageContract $storage config values persistent storage.
+     * @param \Psr\SimpleCache\CacheInterface $cache cache repository to be used.
      */
     public function __construct(RepositoryContract $configRepository, StorageContract $storage, CacheContract $cache = null)
     {
@@ -157,7 +157,7 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
      *
      * @see \Illuminatech\Config\Item
      *
-     * @param  \Illuminatech\Config\Item[]|array  $items
+     * @param \Illuminatech\Config\Item[]|array $items
      * @return static self reference.
      */
     public function setItems(array $items): self
@@ -206,7 +206,7 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
     /**
      * Saves config item values into persistent storage.
      *
-     * @param  array  $values config item values in format: `[id => value]`.
+     * @param array $values config item values in format: `[id => value]`.
      * @return static self reference.
      */
     public function save(array $values): self
@@ -315,7 +315,7 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
     /**
      * Clear value, saved in persistent storage, for the specified item, restoring its original value.
      *
-     * @param  string  $key the key of the item to be cleared.
+     * @param string $key the key of the item to be cleared.
      * @return static self reference.
      */
     public function resetValue($key): self
@@ -355,7 +355,7 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
      * Creates new validator instance for config item values validation.
      * This method takes into account usage of dot ('.') symbol at item IDs, performing escapes for the rule definitions.
      *
-     * @param  array  $values raw input to be validated.
+     * @param array $values raw input to be validated.
      * @return \Illuminate\Contracts\Validation\Validator validator instance.
      */
     public function makeValidator(array $values): Validator
@@ -373,7 +373,7 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
      * Validates data to be set as config item values.
      * This method takes into account usage of dot ('.') symbol at item IDs, ensuring input will not be considered as an array.
      *
-     * @param  array  $values raw data to be validated.
+     * @param array $values raw data to be validated.
      * @return array validated data.
      * @throws \Illuminate\Validation\ValidationException if validation fails.
      */
@@ -443,12 +443,12 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
      * Checks whether given config key matches some of keys from {@see $items}, e.g. whether the key should be saved
      * in persistent storage or not.
      *
-     * @param  iterable|string  $candidateKey config key.
+     * @param iterable|string $candidateKey config key.
      * @return bool whether given key is a persistent one or not.
      */
     private function isPersistentKey($candidateKey): bool
     {
-        if (! is_iterable($candidateKey)) {
+        if (!is_iterable($candidateKey)) {
             $candidateKey = [$candidateKey];
         }
 
@@ -456,8 +456,8 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
             $searchKey = (is_numeric($key)) ? $value : $key;
 
             foreach ($this->getItemKeys() as $persistentKey) {
-                $searchKey = $searchKey.'.';
-                $persistentKey = $persistentKey.'.';
+                $searchKey = $searchKey . '.';
+                $persistentKey = $persistentKey . '.';
 
                 if (strncmp($searchKey, $persistentKey, min(strlen($searchKey), strlen($persistentKey))) === 0) {
                     return true;
@@ -473,7 +473,7 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
     /**
      * Sets cache repository to be used for config values caching.
      *
-     * @param  \Psr\SimpleCache\CacheInterface  $cache cache repository to be used.
+     * @param \Psr\SimpleCache\CacheInterface $cache cache repository to be used.
      * @return static self reference.
      */
     public function setCache(CacheContract $cache)
@@ -500,7 +500,7 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
     /**
      * Stores config values into the cache.
      *
-     * @param  array  $values config values to be cached.
+     * @param array $values config values to be cached.
      */
     protected function setCached(array $values): void
     {
@@ -602,7 +602,7 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
     /**
      * Determine if the given configuration option exists.
      *
-     * @param  string  $key
+     * @param string $key
      * @return bool
      */
     public function offsetExists($key)
@@ -613,7 +613,7 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
     /**
      * Get a configuration option.
      *
-     * @param  string  $key
+     * @param string $key
      * @return mixed
      */
     public function offsetGet($key)
@@ -624,8 +624,8 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
     /**
      * Set a configuration option.
      *
-     * @param  string  $key
-     * @param  mixed  $value
+     * @param string $key
+     * @param mixed $value
      * @return void
      */
     public function offsetSet($key, $value)
@@ -636,7 +636,7 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
     /**
      * Unset a configuration option.
      *
-     * @param  string  $key
+     * @param string $key
      * @return void
      */
     public function offsetUnset($key)
@@ -647,7 +647,7 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
     // Self Configure :
 
     /**
-     * @param  string  $cacheKey key used to store values into the cache.
+     * @param string $cacheKey key used to store values into the cache.
      * @return static self reference.
      */
     public function setCacheKey(string $cacheKey): self
@@ -658,7 +658,7 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
     }
 
     /**
-     * @param  int|\DateInterval  $cacheTtl The TTL (e.g. lifetime) value for the cache.
+     * @param int|\DateInterval $cacheTtl The TTL (e.g. lifetime) value for the cache.
      * @return static self reference.
      */
     public function setCacheTtl($cacheTtl): self
@@ -671,7 +671,7 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
     /**
      * @see gc()
      *
-     * @param  bool  $gcEnabled whether automatic garbage collection should take place on values saving.
+     * @param bool $gcEnabled whether automatic garbage collection should take place on values saving.
      * @return static self reference.
      */
     public function setGcEnabled(bool $gcEnabled): self

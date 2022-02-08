@@ -65,13 +65,14 @@ class StorageDb implements StorageContract
     public $filter = [];
 
     /**
-     * @var Connection the DB connection object.
+     * @var \Illuminate\Database\Connection the DB connection object.
      */
     protected $connection;
 
     /**
      * Constructor.
-     * @param  Connection  $connection DB connection to be used.
+     *
+     * @param \Illuminate\Database\Connection $connection DB connection to be used.
      */
     public function __construct(Connection $connection)
     {
@@ -149,7 +150,7 @@ class StorageDb implements StorageContract
     // Self Configure :
 
     /**
-     * @param  string  $table name of the table, which should store values.
+     * @param string $table name of the table, which should store values.
      * @return static self reference.
      */
     public function setTable(string $table): self
@@ -160,7 +161,7 @@ class StorageDb implements StorageContract
     }
 
     /**
-     * @param  string  $keyColumn name of the column, which should store config item key.
+     * @param string $keyColumn name of the column, which should store config item key.
      * @return static self reference.
      */
     public function setKeyColumn(string $keyColumn): self
@@ -171,7 +172,7 @@ class StorageDb implements StorageContract
     }
 
     /**
-     * @param  string  $valueColumn name of the column, which should store config item value.
+     * @param string $valueColumn name of the column, which should store config item value.
      * @return static self reference.
      */
     public function setValueColumn(string $valueColumn): self
@@ -184,7 +185,7 @@ class StorageDb implements StorageContract
     /**
      * @see \Illuminate\Database\Builder::where()
      *
-     * @param  array  $filter filter condition for records query restriction.
+     * @param array $filter filter condition for records query restriction.
      * @return static self reference.
      */
     public function setFilter($filter): self

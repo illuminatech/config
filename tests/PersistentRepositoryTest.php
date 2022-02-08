@@ -449,8 +449,8 @@ class PersistentRepositoryTest extends TestCase
      *
      * @dataProvider dataProviderLazyRestore
      *
-     * @param  array|string  $key config key.
-     * @param  bool  $allowRestore whether values should be restored from storage.
+     * @param array|string $key config key.
+     * @param bool $allowRestore whether values should be restored from storage.
      */
     public function testLazyRestore($key, bool $allowRestore)
     {
