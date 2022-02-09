@@ -1,6 +1,12 @@
 Laravel Persistent Configuration Repository
 ===========================================
 
+1.3.1 Under Development
+-----------------------
+
+- Enh: Added support for "illuminate/support" 9.0 (klimov-paul)
+
+
 1.3.0, September 9, 2020
 ------------------------
 
