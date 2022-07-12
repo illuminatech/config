@@ -70,6 +70,7 @@ class ItemTest extends TestCase
         $this->assertSame($item->key, $array['key']);
         $this->assertSame($item->label, $array['label']);
         $this->assertSame($item->options, $array['options']);
+        $this->assertSame($item->encrypt, $array['encrypt']);
         $this->assertSame($item->getValue(), $array['value']);
     }
 }

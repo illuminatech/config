@@ -312,6 +312,7 @@ class Item implements Arrayable
             'rules' => $this->rules,
             'cast' => $this->cast,
             'options' => $this->options,
+            'encrypt' => $this->encrypt,
             'value' => $this->getValue(),
         ];
     }
