@@ -1,8 +1,8 @@
 Laravel Persistent Configuration Repository
 ===========================================
 
-1.3.2 Under Development
------------------------
+1.3.2, July 12, 2022
+--------------------
 
 - Bug #16: Fixed missing 'encrypt' key in `Item::toArray()` result (klimov-paul)
 
