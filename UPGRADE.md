@@ -8,11 +8,12 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to following the instructions
 for both A and B.
 
-Upgrade from 1.2.0
+Upgrade from 1.3.0
 ------------------
 
 * Added strict types declarations for the return types of the methods inherited from `ArrayAccess` at `Illuminatech\Config\PersistentRepository`.
   Make sure you use compatible return type declarations in case you override these methods.
+* Support for PHP 7.x has been dropped. Make sure you are using PHP 8.0 or higher.
 
 
 Upgrade from 1.2.0
