@@ -426,7 +426,7 @@ class PersistentRepositoryTest extends TestCase
      *
      * @return array test data.
      */
-    public function dataProviderLazyRestore(): array
+    public static function dataProviderLazyRestore(): array
     {
         return [
             ['another', false],

@@ -11,6 +11,13 @@ for both A and B.
 Upgrade from 1.2.0
 ------------------
 
+* Added strict types declarations for the return types of the methods inherited from `ArrayAccess` at `Illuminatech\Config\PersistentRepository`.
+  Make sure you use compatible return type declarations in case you override these methods.
+
+
+Upgrade from 1.2.0
+------------------
+
 * "illuminate/support" package requirements were raised to 7.26.0. Make sure to upgrade your code accordingly.
 
 
