@@ -1,8 +1,8 @@
 Laravel Persistent Configuration Repository
 ===========================================
 
-1.4.0 Under Development
------------------------
+1.4.0, February 24, 2023
+------------------------
 
 - Enh: Added support for "illuminate/support" 10.0 (klimov-paul)
 - Enh: Added strict types declarations for the return types of the methods inherited from `ArrayAccess` at `PersistentRepository` (klimov-paul)
