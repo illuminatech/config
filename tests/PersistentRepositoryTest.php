@@ -515,4 +515,44 @@ class PersistentRepositoryTest extends TestCase
         $this->assertSame('bar value', $this->persistentRepository->get('bar'));
         $this->assertSame('crypt default', $this->persistentRepository->get('crypt'));
     }
+
+    /**
+     * @see https://github.com/illuminatech/config/issues/18
+     *
+     * @depends testLazyRestore
+     */
+    public function testResetIsRestored()
+    {
+        $storage = $this->getMockBuilder(StorageContract::class)
+            ->getMock();
+
+        $persistentRepository = (new PersistentRepository($this->repository, $storage))
+            ->setItems([
+                'foo.name',
+                'bar.block',
+            ]);
+
+        $restoreCount = 0;
+
+        $storage->method('get')->willReturnCallback(function () use (&$restoreCount) {
+            $restoreCount++;
+
+            return [];
+        });
+
+        $persistentRepository->get('foo.name');
+        $persistentRepository->get('bar.block');
+
+        $this->assertSame(1, $restoreCount);
+
+        $persistentRepository->setItems([
+            'foo.name',
+            'bar.block',
+            'new.item',
+        ]);
+
+        $persistentRepository->get('new.item');
+
+        $this->assertSame(2, $restoreCount);
+    }
 }

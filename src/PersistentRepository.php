@@ -188,6 +188,7 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
 
         $this->items = $collection;
         $this->itemKeys = null;
+        $this->isRestored = false;
 
         return $this;
     }
