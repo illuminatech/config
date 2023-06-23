@@ -122,7 +122,12 @@ Then anytime you access 'config' service in your application via `config()` func
 or via service container you will interact with `\Illuminatech\Config\PersistentRepository` instance getting values modified
 by database data.
 
-Note: this extension does not provide built in service provider for application config substitute as it might be not desired
+> Tip: with this extension there is no need for manually putting any data into actual storage (e.g. writing DB migrations or Seeding) -
+  it will be filled up automatically. If value for the particular item is missing in the storage, it will be simply picked up from
+  the wrapped config repository (e.g. as defined at 'config/*.php' files). However, some storages require some preparations before
+  they can function, like creating a database table.
+
+**Note:** this extension does not provide built in service provider for application config substitute as it might be not desired
 for particular application, while `\Illuminatech\Config\PersistentRepository` usage is not limited with this task.
 However, you can use `\Illuminatech\Config\Providers\AbstractPersistentConfigServiceProvider` class as a scaffold for such service provider.
 For example:
