@@ -1,8 +1,8 @@
 Laravel Persistent Configuration Repository
 ===========================================
 
-1.4.1 Under Development
------------------------
+1.4.1, June 23, 2023
+--------------------
 
 - Bug #18: Fixed `PersistentRepository` unable to automatically restore value for `Item` added in postpone manner (klimov-paul)
 
