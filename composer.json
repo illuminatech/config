@@ -15,7 +15,7 @@
         }
     ],
     "require": {
-        "illuminate/support": "^9.0 || ^10.0"
+        "illuminate/support": "^9.0 || ^10.0 || ^11.0"
     },
     "require-dev": {
         "illuminate/database": "*",
@@ -24,7 +24,7 @@
         "illuminate/encryption": "*",
         "illuminate/validation": "*",
         "psr/log": "^1.0",
-        "phpunit/phpunit": "^8.0 || ^9.3 || ^10.0.7"
+        "phpunit/phpunit": "^8.0 || ^9.3 || ^10.5"
     },
     "autoload": {
         "psr-4": {
