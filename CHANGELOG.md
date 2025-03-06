@@ -1,6 +1,12 @@
 Laravel Persistent Configuration Repository
 ===========================================
 
+1.4.3 Under Development
+-----------------------
+
+- Enh: Added support for "illuminate/support" 12.0 (klimov-paul)
+
+
 1.4.2, March 25, 2024
 ---------------------
 
