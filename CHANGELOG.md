@@ -1,6 +1,13 @@
 Laravel Persistent Configuration Repository
 ===========================================
 
+1.4.4, March 21, 2026
+---------------------
+
+- Enh: Added support for "illuminate/support" 13.0 (klimov-paul)
+- Bug: Fixed missing explicit nullable type hints for PHP 8.4 (klimov-paul)
+
+
 1.4.3, March 6, 2025
 --------------------
 

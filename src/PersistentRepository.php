@@ -114,9 +114,9 @@ class PersistentRepository implements ArrayAccess, RepositoryContract
      *
      * @param \Illuminate\Contracts\Config\Repository $configRepository config repository to be decorated.
      * @param StorageContract $storage config values persistent storage.
-     * @param \Psr\SimpleCache\CacheInterface $cache cache repository to be used.
+     * @param \Psr\SimpleCache\CacheInterface|null $cache cache repository to be used.
      */
-    public function __construct(RepositoryContract $configRepository, StorageContract $storage, CacheContract $cache = null)
+    public function __construct(RepositoryContract $configRepository, StorageContract $storage, ?CacheContract $cache = null)
     {
         $this->repository = $configRepository;
         $this->storage = $storage;

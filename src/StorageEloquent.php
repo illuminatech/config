@@ -88,7 +88,7 @@ class StorageEloquent implements StorageContract
      *
      * @param string|null $model name of the Eloquent model class, which should store the config values.
      */
-    public function __construct(string $model = null)
+    public function __construct(?string $model = null)
     {
         $this->model = $model;
     }
